@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder,
   FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
-import { ReInsuranceService } from '../../service/re-insurance.service';
-import { map, take, takeUntil } from 'rxjs';
-import { DashboardData } from '../../interface/dashboardInterface';
+import { take, takeUntil } from 'rxjs';
 import { UnSubscriber } from '../../const-ts/un-subscriber';
+import { DashboardData } from '../../interface/dashboardInterface';
+import { ReInsuranceService } from '../../service/re-insurance.service';
 
 @Component({
   selector: 'app-ri-basis',
@@ -28,18 +28,17 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   riBtn: boolean = true;
   selectPolicy: string = 'Policy';
   selectedTabIndex: number = 0;
-  presentAllRisk: boolean = false;
+  isPresentAllRisk: boolean = false;
   isSinglePlacement: boolean = false;
-  placeWiseAct: boolean = false;
+  isPlaceWiseAct: boolean = false;
   loadingCheck: boolean = false;
+  percentageAll:number = 0;
+  facPercentage:number = 0;
+
   tabs: string[] = ['select 1', 'select 2'];
-
   currencies: string[] = ['Local Currency: T2', 'Foreign Currency: T2'];
-
   facBasic: string[] = ['Policy', 'Risk'];
-
   securityOption = [{ value: 'Yes' }, { value: 'No' }];
-
   placeWise = [{ value: 'Yes' }, { value: 'No' }];
   partcipantCode = [
     { value: 'partcipant code 1' },
@@ -77,7 +76,6 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     this.reInsuranceSer
       .getDashboard()
       .pipe(
-        map((x: DashboardData[]) => x),
         take(1),
         takeUntil(this.destroy$)
       )
@@ -273,11 +271,16 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       this.taxData.removeAt(idx);
     }
   }
-  singlePlacementMethod() {
-    console.log(this.facPlacements.value)
-   if(this.isSinglePlacement){
-    
+  singlePlacementVerify() {
+   if(this.isSinglePlacement && this.facPlacements.length > 1){
+    this.facPlacements.clear();
+    this.facPlacements.push(this.createFacPlacementControls());
    }
 
+  }
+  updatePercentageToAll(){
+    if(this.isPresentAllRisk){
+      this.percentageAll = this.facPercentage
+    }
   }
 }

@@ -33,14 +33,14 @@
        <div class="form-container">
         <!-- Checkbox Options -->
         <div class="options">
-          <mat-checkbox class="custom-checkbox" color="primary" [(ngModel)]="presentAllRisk" checked>
+          <mat-checkbox class="custom-checkbox" color="primary"  [(ngModel)]="isPresentAllRisk" checked>
             Percentage All Risk
           </mat-checkbox>
-          <mat-checkbox class="custom-checkbox" color="primary" (change)="singlePlacementMethod()" [(ngModel)]="isSinglePlacement" checked>
+          <mat-checkbox class="custom-checkbox" color="primary" (change)="singlePlacementVerify()" [(ngModel)]="isSinglePlacement" checked>
             Single Placement
           </mat-checkbox>
 
-          <mat-checkbox class="custom-checkbox" color="primary" [(ngModel)]="placeWiseAct" checked>
+          <mat-checkbox class="custom-checkbox" color="primary"  [(ngModel)]="isPlaceWiseAct" checked>
             Place Wise Accounting
           </mat-checkbox>
         </div>
@@ -50,7 +50,7 @@
         <div class="fac-percentage" >
           <mat-form-field appearance="outline" class="custom-input" >
             <mat-label>FAC percentage</mat-label>
-            <input matInput placeholder="Enter percentage" type="number" />
+            <input matInput (selectionchange)="updatePercentageToAll()"  [(ngModel)]="facPercentage" placeholder="Enter percentage" type="number" />
           </mat-form-field>
         </div>
       
@@ -397,7 +397,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr >
                     <td>1</td>
                     <td><b>Description</b></td>
                     <td>30%</td>
@@ -417,7 +417,7 @@
                     <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
                     <td><mat-checkbox class="custom-checkbox" checked></mat-checkbox></td>
                     <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
-                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput [(ngModel)]="percentageAll" value="3"></mat-form-field></td>
                     <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
                     <td>
                       <button mat-icon-button class="save-btn">
