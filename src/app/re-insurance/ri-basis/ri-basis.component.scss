@@ -1,4 +1,4 @@
-
+@import '../../../shared-style/color.scss';
 
 .fac-container {
   width: 100%;
@@ -299,7 +299,7 @@
   .form-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     background: #f8f9fc; // Light background color
     padding: 16px 24px;
     border-radius: 12px;
@@ -339,8 +339,9 @@
       }
     }
   
+   .btn-container{
     .process-btn {
-      background: #001f7f;
+      background: #042181;
       color: #fff;
       border: none;
       padding: 10px 20px;
@@ -348,7 +349,24 @@
       cursor: pointer;
       transition: 0.3s;
       width: 180px;
+      &:hover{
+        background: #0033aa;
+      }
     }
+    .back-btn {
+      background: #042181;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    
+      &:hover {
+        background: #0033aa;
+      }
+    }
+   }
   }
   
   
@@ -458,7 +476,7 @@
   
     mat-chip {
       margin-right: 10px;
-      background-color:#6200ea !important;
+      background-color:$purple-btn !important;
       color: white !important;
       font-weight: bold;
      
@@ -493,19 +511,7 @@
 .fac-select{
   margin-top: 10px;
 }
-.back-btn {
-  background: #001f7f;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
 
-  &:hover {
-    background: #0033aa;
-  }
-}
 
 @media screen and (max-width: 768px) {
   .policy-details{
@@ -529,5 +535,13 @@
 @media  screen and (min-width: 768px) {
   .cover-details{
     overflow: auto !important;
+  }
+}
+
+@media screen and (max-width: 1110px){
+  .form-container{
+    .btn-container{
+      margin-left: -16px;
+    }
   }
 }

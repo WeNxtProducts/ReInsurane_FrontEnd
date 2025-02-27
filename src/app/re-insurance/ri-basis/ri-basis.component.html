@@ -54,12 +54,14 @@
           </mat-form-field>
         </div>
       
-        <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
-        <button *ngIf="riBtn" class="back-btn" (click)="facPlacementBtn()">FAC Placement details →</button>
-        <!-- Process Button -->
+        <div class="btn-container">
+          <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
+          <button *ngIf="riBtn" class="back-btn" (click)="facPlacementBtn()">FAC Placement details →</button>
+            <!-- Process Button -->
         <button  class="process-btn">
           Process →
         </button>
+        </div>
       </div>
       
  
