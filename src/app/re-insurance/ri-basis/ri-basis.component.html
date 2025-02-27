@@ -1,0 +1,450 @@
+<div class="fac-container">
+    <!-- Header Section -->
+    <div class="fac-header">
+      <div class="policy-details">
+        <div class="detail-box">
+          <strong>Policy Number:</strong> P10101/010101/000101
+        </div>
+        <div class="detail-box">
+          <strong>Endorsement Number & Idx:</strong> E01/0101/10101/10101-10-1
+        </div>
+        <div class="detail-box">
+          <strong>Division & Department:</strong> 10 - Phoenix, Motor
+        </div>
+        <div class="detail-box">
+          <strong>FAC Basis :</strong>
+          <mat-form-field  class="fac-select" appearance="outline">
+            <mat-select name="countryVaraible" [(value)]="selectPolicy">
+              <mat-option *ngFor="let item of facBasic" [value]="item">
+                {{item}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="detail-box">
+          <strong>Start & End Date:</strong> 12/12/2020 - 12/12/2021
+        </div>
+      </div>
+
+    </div>
+  
+       <!-- percent all risk -->
+
+       <div class="form-container">
+        <!-- Checkbox Options -->
+        <div class="options">
+          <mat-checkbox class="custom-checkbox" color="primary" [(ngModel)]="presentAllRisk" checked>
+            Percentage All Risk
+          </mat-checkbox>
+          <mat-checkbox class="custom-checkbox" color="primary" (change)="singlePlacementMethod()" [(ngModel)]="isSinglePlacement" checked>
+            Single Placement
+          </mat-checkbox>
+
+          <mat-checkbox class="custom-checkbox" color="primary" [(ngModel)]="placeWiseAct" checked>
+            Place Wise Accounting
+          </mat-checkbox>
+        </div>
+
+      
+        <!-- Input Field -->
+        <div class="fac-percentage" >
+          <mat-form-field appearance="outline" class="custom-input" >
+            <mat-label>FAC percentage</mat-label>
+            <input matInput placeholder="Enter percentage" type="number" />
+          </mat-form-field>
+        </div>
+      
+        <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
+        <button *ngIf="riBtn" class="back-btn" (click)="facPlacementBtn()">FAC Placement details →</button>
+        <!-- Process Button -->
+        <button  class="process-btn">
+          Process →
+        </button>
+      </div>
+      
+ 
+  
+    <!-- FAC Placement Details Form -->
+
+    <div *ngIf="!riBtn" class="placement-form">
+  
+        <mat-expansion-panel  *ngFor="let fac of facPlacements.controls; let i = index"  [expanded]="i === activePanelIndex" 
+        (opened)="onPanelOpenFacPlacement(i)">
+          <mat-expansion-panel-header>
+            <mat-panel-title> <span class="placement-heading">FAC Placement Details {{ i + 1 }}</span> </mat-panel-title>
+            <!-- <mat-panel-description> Enter FAC placement-related details here.</mat-panel-description> -->
+          </mat-expansion-panel-header>
+          <div class="first-container">
+            <div class="fac-details">
+              <p class="fac-heading">Enter FAC placement-related details here.</p>
+              <div class="facForm">
+                <form [formGroup]="facForm">
+                  <div class="facPlacements" formArrayName="facPlacements">
+                    <div [formArrayName]="i">
+                      <!-- Input Fields Row -->
+                      <div class="form-group row">
+                        <mat-form-field appearance="outline">
+                          <mat-label>FAC Placement Number</mat-label>
+                          <input matInput [formControlName]="0" placeholder="Enter Number" />
+                        </mat-form-field>
+        
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>SI </mat-label>
+                          <input matInput [formControlName]="1" placeholder="Enter Percentage" />
+                        </mat-form-field>
+  
+                        <mat-form-field appearance="outline">
+                          <mat-label>Premium </mat-label>
+                          <input matInput [formControlName]="2" placeholder="Enter Rate" />
+                        </mat-form-field>
+  
+                        <mat-form-field appearance="outline">
+                          <mat-label>FAC Rate </mat-label>
+                          <input matInput [formControlName]="3" placeholder="Enter SI" />
+                        </mat-form-field>
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>FAC SI </mat-label>
+                          <input matInput [formControlName]="4" placeholder="Enter SI" />
+                        </mat-form-field>
+        
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>FAC Premium </mat-label>
+                          <input matInput [formControlName]="5" placeholder="Enter Rate" />
+                        </mat-form-field>
+  
+  
+                        <mat-checkbox class="custom-checkbox" [formControlName]="6" color="primary" checked>
+                          Security Y/N
+                        </mat-checkbox>
+                      </div>
+  
+                    </div>
+                    <div class="btn-container">
+                      <button class="save-btn" (click)="submitForm()"> <i class="fa-solid fa-floppy-disk"></i></button> 
+                      <button *ngIf="!isSinglePlacement" class="save-btn" (click)="addFacPlacement();">
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                      <button  class="save-btn" (click)="closePanelFacPlacement(i);">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              
+              </div>
+            </div>
+          
+            <!-- Submit & Add New Button -->
+            
+          </div>
+          <div class="second-container">
+            <mat-expansion-panel *ngFor="let fac of partcipantData.controls; let i = index" [expanded]="i === activaPanel" 
+            (opened)="onpanelOpen(i)">
+              <mat-expansion-panel-header>
+                <mat-panel-title><span class="partcipant-heading"> FAC Partcipant Details {{ i + 1 }}</span> </mat-panel-title>
+                <!-- <mat-panel-description> Click to expand/collapse </mat-panel-description> -->
+              </mat-expansion-panel-header>
+             <div class="Partcipant-container">
+              <div class="partcipant-first-container">
+                <form [formGroup]="partcipantForm">
+                  <div formArrayName="partcipantData">
+                    <div [formArrayName]="i">
+                      <div class="form-group row">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Partcipant Code</mat-label>
+                          <mat-select [formControlName]="0" panelClass="custom-dropdown">
+                            <mat-option *ngFor="let option of partcipantCode" [value]="option.value">
+                              {{ option.value }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Broker Code</mat-label>
+                          <mat-select [formControlName]="1" panelClass="custom-dropdown">
+                            <mat-option *ngFor="let option of securityOption" [value]="option.value">
+                              {{ option.value }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Partcipant Perc</mat-label>
+                          <input matInput [formControlName]="2" placeholder="Enter SI" />
+                        </mat-form-field>
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>SI </mat-label>
+                          <input matInput [formControlName]="3" placeholder="Enter Rate" />
+                        </mat-form-field>
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Premium </mat-label>
+                          <input matInput [formControlName]="4" placeholder="Enter Rate" />
+                        </mat-form-field>
+        
+                        <mat-form-field appearance="outline">
+                          <mat-label>Over Premium </mat-label>
+                          <input matInput [formControlName]="5" placeholder="Enter Premium" />
+                        </mat-form-field>
+                        
+                       </div>
+                     <div>
+                      
+                      <div class="commission-container">
+                        <mat-expansion-panel *ngFor="let fac of commissionData.controls; let i = index" [expanded]="i === commissionActivePanel" 
+                        (opened)="commissionPanelOpen(i)">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title><span class="partcipant-heading">Commission details{{ i + 1 }}</span> </mat-panel-title>
+                            <!-- <mat-panel-description> Click to expand/collapse </mat-panel-description> -->
+                          </mat-expansion-panel-header>
+                         <div class="Partcipant-container">
+                          <div class="partcipant-first-container">
+                            <form [formGroup]="commissionForm">
+                              <div formArrayName="commissionData">
+                                <div [formArrayName]="i">
+                                  <div class="form-group row">
+                                    <mat-form-field appearance="outline">
+                                      <mat-label>Commission Code</mat-label>
+                                      <mat-select [formControlName]="0" panelClass="custom-dropdown">
+                                        <mat-option *ngFor="let option of commissionCodes" [value]="option.value">
+                                          {{ option.value }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                    
+                                    <mat-form-field appearance="outline">
+                                      <mat-label>Commission Type</mat-label>
+                                      <mat-select [formControlName]="1" panelClass="custom-dropdown">
+                                        <mat-option *ngFor="let option of commissionTypes" [value]="option.value">
+                                          {{ option.value }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                    
+                                   <mat-form-field appearance="outline">
+                                     <mat-label>Commission Per </mat-label>
+                                     <input matInput [formControlName]="2" placeholder="Enter Rate" />
+                                   </mat-form-field>
+                    
+                                   <mat-form-field appearance="outline">
+                                     <mat-label>Commission Amount </mat-label>
+                                     <input matInput [formControlName]="3" placeholder="Enter Rate" />
+                                   </mat-form-field>
+                                   
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                     
+                          <div class="btn-container">
+                            <button class="save-btn" (click)="commissionFormSubmit()"><i class="fa-solid fa-floppy-disk"></i></button> 
+                            <button class="save-btn" (click)="addCommissionsFrom()">
+                              <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <button  class="save-btn" (click)="closeCommissions(i);">
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
+                         </div>
+                        </mat-expansion-panel>
+                      </div>
+
+                        <!-- FAC Partcipant Details -->
+        
+                      <div class="tax-container">
+                        <mat-expansion-panel *ngFor="let fac of taxData.controls; let i = index" [expanded]="i === taxActivePanel" 
+                        (opened)="taxPanelOpen(i)">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title><span class="partcipant-heading">Tax Details {{ i + 1 }}</span> </mat-panel-title>
+                            <!-- <mat-panel-description> Click to expand/collapse </mat-panel-description> -->
+                          </mat-expansion-panel-header>
+                         <div class="Partcipant-container">
+                          <div class="partcipant-first-container">
+                            <form [formGroup]="taxForm">
+                              <div formArrayName="taxData">
+                                <div [formArrayName]="i">
+                                  <div class="form-group row">
+                                  
+                                    <mat-form-field appearance="outline">
+                                      <mat-label>Tax Details</mat-label>
+                                      <mat-select [formControlName]="0" panelClass="custom-dropdown">
+                                        <mat-option *ngFor="let option of taxCodes" [value]="option.value">
+                                          {{ option.value }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                    
+                                    <mat-form-field appearance="outline">
+                                      <mat-label>Tax Type</mat-label>
+                                      <mat-select [formControlName]="1" panelClass="custom-dropdown">
+                                        <mat-option *ngFor="let option of taxTypes" [value]="option.value">
+                                          {{ option.value }}
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                    
+                                   <mat-form-field appearance="outline">
+                                     <mat-label>Tax Perc </mat-label>
+                                     <input matInput [formControlName]="2" placeholder="Enter Rate" />
+                                   </mat-form-field>
+                    
+                                   <mat-form-field appearance="outline">
+                                     <mat-label>Tax Amount </mat-label>
+                                     <input matInput [formControlName]="3" placeholder="Enter Rate" />
+                                   </mat-form-field>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                     
+                          <div class="btn-container">
+                            <button class="save-btn" (click)="taxFormSubmit()"><i class="fa-solid fa-floppy-disk"></i></button> 
+                            <button  class="save-btn" (click)="addTaxForm()">
+                              <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <button  class="save-btn" (click)="closeTaxForm(i);">
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
+                         </div>
+                        </mat-expansion-panel>
+                      </div>
+                     </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+         
+              <div class="btn-container">
+                <button class="save-btn" (click)="partcipantSubmitForm()"><i class="fa-solid fa-floppy-disk"></i></button> 
+                <button  class="save-btn" (click)="addPartcipant()">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+                <button  class="save-btn" (click)="closePanelPartcipant(i);">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+             </div>
+            </mat-expansion-panel>
+          </div>
+        </mat-expansion-panel>
+    </div>
+
+
+    
+      <div *ngIf="riBtn">
+        <mat-tab-group 
+        (selectedIndexChange)="onTabChange($event)">
+          <mat-tab *ngFor="let tab of tabs" [label]="tab">
+          </mat-tab>
+          <!-- <mat-tab label="Section 1"></mat-tab>
+          <mat-tab label="Section 2"></mat-tab> -->
+        </mat-tab-group>
+      
+      <div class="fac-cover-details" *ngIf="selectedTabIndex  === 0">
+       <div class="cover-container">
+        <span class="cover-header">FAC Cover Details</span>
+        <span class="cover-details">Risk Details</span>
+       </div>
+        <mat-accordion>
+          <!-- Risk Section (Example for Risk Id 2) -->
+          <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+              <div class="risk-header">
+                <span class="risk-id">Risk Id - 2</span>
+                <mat-chip ><span style="color: #ffffff;">2 Covers</span></mat-chip>
+              </div>
+            </mat-expansion-panel-header>
+      
+            <div class="risk-description">Risk Description</div>
+      
+            <div class="cover-details">
+              <mat-chip-set>
+                <span>
+                  <mat-chip *ngFor="let currency of currencies" 
+                            [removable]="true" 
+                           >
+                    <span style="color:#ffffff;">{{ currency }}</span>
+                  </mat-chip>
+                </span>
+              </mat-chip-set>
+              
+              
+      
+              <table class="cover-table">
+                <thead>
+                  <tr>
+                    <th>Cover</th>
+                    <th>Cover Description</th>
+                    <th>CQS %</th>
+                    <th>FAC %</th>
+                    <th>TTY %</th>
+                    <th>SI *</th>
+                    <th>Premium *</th>
+                    <th>FAC SI *</th>
+                    <th>Uw Rate *</th>
+                    <th>Rate Y/N *</th>
+                    <th>FAC Rate *</th>
+                    <th>FAC Prem *</th>
+                    <th>FAC Place No *</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><b>Description</b></td>
+                    <td>30%</td>
+                    <td><mat-form-field appearance="outline"><input matInput value="10000"></mat-form-field></td>
+                    <td>40%</td>
+                    <td>
+                      <mat-form-field appearance="outline">
+                        <input matInput  value="100000" />
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field appearance="outline">
+                        <input matInput  value="100000" />
+                      </mat-form-field>
+                    </td>
+                    <td><mat-form-field appearance="outline"><input matInput value="10000000"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
+                    <td><mat-checkbox class="custom-checkbox" checked></mat-checkbox></td>
+                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
+                    <td>
+                      <button mat-icon-button class="save-btn">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+      
+            <div class="action-buttons">
+              <button   class="save">Save all</button>
+              <button  class="close-btn">Close</button>
+            </div>
+          </mat-expansion-panel>
+      
+        
+      
+        </mat-accordion>
+      </div>
+      
+      </div>
+      
+      
+    
+
+  </div>
+
+  <!-- <app-loading *ngIf="loadingCheck" ></app-loading> -->

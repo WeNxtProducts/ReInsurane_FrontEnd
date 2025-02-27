@@ -1,0 +1,173 @@
+/* You can add global styles to this file, and also import other style files */
+// // General Reset
+// * {
+//     margin: 0;
+//     padding: 0;
+//     box-sizing: border-box;
+//     font-family: 'Arial', sans-serif;
+//   }
+  
+//   // Layout Container
+//   .app-container {
+//     display: flex;
+//     height: 100vh;
+//   }
+  
+//   // Sidebar Styles
+//   .sidebar {
+//     width: 250px;
+//     background: #ffffff;
+//     box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+//     display: flex;
+//     flex-direction: column;
+//     padding: 20px;
+//     border-radius: 12px !important;
+//     margin-top: 10px !important;
+//     height: 98vh !important;
+//     .logo {
+//       text-align: center;
+//       margin-bottom: 20px;
+      
+//       img {
+//         width: 150px;
+//       }
+//     }
+    
+//     .menu {
+//       list-style: none;
+//       padding: 0;
+  
+//       li {
+//         padding: 15px;
+//         border-radius: 5px;
+        
+//         a {
+//           text-decoration: none;
+//           color: #333;
+//           display: flex;
+//           align-items: center;
+//           font-size: 16px;
+  
+//           i {
+//             margin-right: 10px;
+//           }
+  
+//           &:hover {
+//             color: #007bff;
+//           }
+//         }
+//       }
+//     }
+  
+//     .support {
+//       text-align: center;
+//       margin-top: 150px;
+  
+//       .support-btn {
+//         width: 100%;
+//         padding: 10px;
+//         background: #007bff;
+//         color: #fff;
+//         border: none;
+//         border-radius: 5px;
+//         cursor: pointer;
+//         font-size: 14px;
+  
+//         &:hover {
+//           background: #0056b3;
+//         }
+//       }
+//     }
+//   }
+  
+//   // Header Styles
+//   .header {
+//     width: 100%;
+//     height: 60px;
+//     background: #f8f9fa;
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     padding: 0 20px;
+//     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  
+//     .search-bar {
+//       display: flex;
+//       align-items: center;
+//       background: #fff;
+//       padding: 5px 10px;
+//       border-radius: 20px;
+//       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  
+//       input {
+//         border: none;
+//         outline: none;
+//         padding: 5px;
+//       }
+  
+//       i {
+//         color: #aaa;
+//       }
+//     }
+  
+//     .header-right {
+//       display: flex;
+//       align-items: center;
+  
+//       .notification {
+//         font-size: 18px;
+//         margin-right: 20px;
+//         cursor: pointer;
+//         color: #555;
+//       }
+  
+//       .user-profile {
+//         display: flex;
+//         align-items: center;
+  
+//         img {
+//           width: 35px;
+//           height: 35px;
+//           border-radius: 50%;
+//           margin-right: 10px;
+//         }
+//       }
+//     }
+//   }
+  
+  // Main Content Area
+  
+  .mat-mdc-checkbox.custom-checkbox {
+    .mdc-checkbox__background {
+      border-color: #6200ea !important;
+    }
+  
+    .mdc-checkbox__native-control:checked + .mdc-checkbox__background {
+      background-color: #6200ea !important;
+      border-color: #6200ea !important;
+    }
+  
+    .mdc-checkbox__checkmark {
+      background-color:#6200ea ;
+      color: white !important;
+    }
+  
+    .mdc-label {
+      font-size: 16px;
+      color: #333 !important;
+    }
+  }
+
+  // mat Input border radius
+  .mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: 10px !important;
+  }
+.mdc-checkbox__background{
+  border-radius: 5px !important;
+}
+
+// .mat-expansion-panel-body{
+//   display: flex !important;
+// }
+html, body { height: 100%; overflow-x: hidden; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
