@@ -10,6 +10,15 @@ import { take, takeUntil } from 'rxjs';
 import { UnSubscriber } from '../../const-ts/un-subscriber';
 import { DashboardData } from '../../interface/dashboardInterface';
 import { ReInsuranceService } from '../../service/re-insurance.service';
+import { CoverDetails } from '../../modal/cover-modal';
+
+
+
+export const decimalThreeDigitValidator = (control: FormControl): { [key: string]: boolean } | null => {
+  const regex = /^-?\d+(?:\.\d{0,3})?$/;
+  return control.value && !regex.test(control.value) ? { decimalThreeDigit: true } : null;
+};
+
 
 @Component({
   selector: 'app-ri-basis',
@@ -28,14 +37,16 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   riBtn: boolean = true;
   selectPolicy: string = 'Policy';
   selectedTabIndex: number = 0;
-  isPresentAllRisk: boolean = false;
-  isSinglePlacement: boolean = false;
-  isPlaceWiseAct: boolean = false;
+  isPresentAllRisk: boolean = true;
+  isSinglePlacement: boolean = true;
+  isPlaceWiseAct: boolean = true;
   loadingCheck: boolean = false;
   percentageAll:number = 0;
   facPercentage:number = 0;
 
-  tabs: string[] = ['select 1', 'select 2'];
+  public coverDetails = new CoverDetails()
+
+  tabs: string[] = ['select 1', 'select 2','select 3'];
   currencies: string[] = ['Local Currency: T2', 'Foreign Currency: T2'];
   facBasic: string[] = ['Policy', 'Risk'];
   securityOption = [{ value: 'Yes' }, { value: 'No' }];
@@ -48,6 +59,27 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   commissionTypes = [{ value: 'Type 1' }, { value: 'Type 2' }];
   taxCodes = [{ value: 'Tax Code 1' }, { value: 'Tax Code 2' }];
   taxTypes = [{ value: 'Tax Type 1' }, { value: 'Tax Type 2' }];
+
+  risks = [
+    [
+      { id: 1, description: 'Risk 1 Description', expanded: true, currencies: ['USD', 'INR'], covers: [
+          { id: 1, description: 'Cover 1', cqs: '30%', fac: 10000, tty: '40%', si: 100000, premium: 100000, facSi: 10000000, uwRate: 1, rateYn: true, facRate: 1, facPrem: 3, facPlaceNo: 1 }
+        ]
+      }
+    ],
+    [
+      { id: 2, description: 'Risk 2 Description', expanded: false, currencies: ['EUR', 'GBP'], covers: [
+          { id: 2, description: 'Cover 2', cqs: '25%', fac: 20000, tty: '50%', si: 200000, premium: 200000, facSi: 20000000, uwRate: 2, rateYn: false, facRate: 2, facPrem: 4, facPlaceNo: 2 }
+        ]
+      }
+    ],
+    [
+      { id: 3, description: 'Risk 3 Description', expanded: false, currencies: ['JPY', 'AUD'], covers: [
+          { id: 3, description: 'Cover 3', cqs: '20%', fac: 30000, tty: '60%', si: 300000, premium: 300000, facSi: 30000000, uwRate: 3, rateYn: true, facRate: 3, facPrem: 5, facPlaceNo: 3 }
+        ]
+      }
+    ]
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -73,14 +105,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
 
   ngOnInit(): void {
     this.loadingCheck = true;
-    this.reInsuranceSer
-      .getDashboard()
-      .pipe(
-        take(1),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(
-        (data: DashboardData[]) => {
+    this.reInsuranceSer.getDashboard().pipe(take(1),takeUntil(this.destroy$)).subscribe((data: DashboardData[]) => {
           console.log(data);
           this.loadingCheck = false;
         },
@@ -93,7 +118,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
 
   createFacPlacementControls(): FormArray {
     return this.fb.array([
-      new FormControl('', Validators.required), // security
+      new FormControl('',[ Validators.required]), // security
       new FormControl('', Validators.required), // placeWiseSort
       new FormControl('', Validators.required), // si
       new FormControl('', Validators.required), // facRate
@@ -105,7 +130,6 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
 
   createPartcipantControl(): FormArray {
     return this.fb.array([
-      new FormControl('', Validators.required), //facPlacement number
       new FormControl('', Validators.required), // partcipant code
       new FormControl('', Validators.required), // Broker code
       new FormControl('', Validators.required), // partcipant percentage
@@ -188,13 +212,12 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   partcipantSubmitForm() {
     let partcipantFormControl = this.partcipantForm.value.partcipantData.map(
       (data: any) => ({
-        facPlacementNumber: data[0],
-        partcipantCode: data[1],
-        brokerCode: data[2],
-        partcipantPernt: data[3],
-        si: data[4],
-        premium: data[5],
-        overPremium: data[6],
+        partcipantCode: data[0],
+        brokerCode: data[1],
+        partcipantPernt: data[2],
+        si: data[3],
+        premium: data[4],
+        overPremium: data[5],
       })
     );
     console.log(partcipantFormControl, 'part');
@@ -282,5 +305,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     if(this.isPresentAllRisk){
       this.percentageAll = this.facPercentage
     }
+  }
+  saveAllCovers(){
+    console.log(this.risks,'risk',this.coverDetails)
   }
 }

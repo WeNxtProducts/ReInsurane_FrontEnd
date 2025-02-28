@@ -50,7 +50,8 @@
         <div class="fac-percentage" >
           <mat-form-field appearance="outline" class="custom-input" >
             <mat-label>FAC percentage</mat-label>
-            <input matInput (selectionchange)="updatePercentageToAll()"  [(ngModel)]="facPercentage" placeholder="Enter percentage" type="number" />
+            <input matInput (selectionchange)="updatePercentageToAll()" PercentageDirective [(ngModel)]="facPercentage" placeholder="Enter percentage" type="text" />
+            <!-- <mat-error ></mat-error> -->
           </mat-form-field>
         </div>
       
@@ -88,44 +89,52 @@
                         <mat-form-field appearance="outline">
                           <mat-label>FAC Placement Number</mat-label>
                           <input matInput [formControlName]="0" placeholder="Enter Number" />
+                          <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Placement Number</mat-error>
                         </mat-form-field>
         
         
                         <mat-form-field appearance="outline">
                           <mat-label>SI </mat-label>
                           <input matInput [formControlName]="1" placeholder="Enter Percentage" />
+                          <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter Percentage</mat-error>
+
                         </mat-form-field>
   
                         <mat-form-field appearance="outline">
                           <mat-label>Premium </mat-label>
                           <input matInput [formControlName]="2" placeholder="Enter Rate" />
+                          <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter Rate</mat-error>
                         </mat-form-field>
   
                         <mat-form-field appearance="outline">
                           <mat-label>FAC Rate </mat-label>
-                          <input matInput [formControlName]="3" placeholder="Enter SI" />
+                          <input matInput [formControlName]="3" placeholder="FAC Rate" />
+                          <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Rate</mat-error>
                         </mat-form-field>
         
                         <mat-form-field appearance="outline">
                           <mat-label>FAC SI </mat-label>
                           <input matInput [formControlName]="4" placeholder="Enter SI" />
+                          <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter SI</mat-error>
                         </mat-form-field>
         
         
                         <mat-form-field appearance="outline">
                           <mat-label>FAC Premium </mat-label>
-                          <input matInput [formControlName]="5" placeholder="Enter Rate" />
+                          <input matInput [formControlName]="5" placeholder="FAC Premium" />
+                          <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Premium</mat-error>
                         </mat-form-field>
   
   
                         <mat-checkbox class="custom-checkbox" [formControlName]="6" color="primary" checked>
                           Security Y/N
                         </mat-checkbox>
+                        <!-- <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Premium</mat-error> -->
                       </div>
-  
+
                     </div>
                     <div class="btn-container">
-                      <button class="save-btn" (click)="submitForm()"> <i class="fa-solid fa-floppy-disk"></i></button> 
+                      <button [ngClass]="facForm.invalid ? 'invalid-btn' : 'save-btn'" [disabled]="facForm.invalid"  (click)="submitForm()"> <i class="fa-solid fa-floppy-disk"></i></button> 
                       <button *ngIf="!isSinglePlacement" class="save-btn" (click)="addFacPlacement();">
                         <i class="fa-solid fa-plus"></i>
                       </button>
@@ -143,10 +152,10 @@
             
           </div>
           <div class="second-container">
-            <mat-expansion-panel *ngFor="let fac of partcipantData.controls; let i = index" [expanded]="i === activaPanel" 
-            (opened)="onpanelOpen(i)">
+            <mat-expansion-panel *ngFor="let fac of partcipantData.controls; let idx = index" [expanded]="idx === activaPanel" 
+            (opened)="onpanelOpen(idx)">
               <mat-expansion-panel-header>
-                <mat-panel-title><span class="partcipant-heading"> FAC Partcipant Details {{ i + 1 }}</span> </mat-panel-title>
+                <mat-panel-title><span class="partcipant-heading"> FAC Partcipant Details {{ idx + 1 }}</span> </mat-panel-title>
                 <!-- <mat-panel-description> Click to expand/collapse </mat-panel-description> -->
               </mat-expansion-panel-header>
              <div class="Partcipant-container">
@@ -155,6 +164,7 @@
                   <div formArrayName="partcipantData">
                     <div [formArrayName]="i">
                       <div class="form-group row">
+
                         <mat-form-field appearance="outline">
                           <mat-label>Partcipant Code</mat-label>
                           <mat-select [formControlName]="0" panelClass="custom-dropdown">
@@ -162,7 +172,10 @@
                               {{ option.value }}
                             </mat-option>
                           </mat-select>
-                        </mat-form-field>
+                          <mat-error *ngIf="partcipantData.errors?.['required']  || (partcipantData.touched && partcipantData.dirty)">
+                            Please select a Participant Code
+                          </mat-error>
+                         </mat-form-field>
         
                         <mat-form-field appearance="outline">
                           <mat-label>Broker Code</mat-label>
@@ -171,26 +184,41 @@
                               {{ option.value }}
                             </mat-option>
                           </mat-select>
+                          <mat-error *ngIf="partcipantData.errors?.['required']  || (partcipantData.touched && partcipantData.dirty)">
+                            Please select a Broker Code
+                          </mat-error>
                         </mat-form-field>
         
                         <mat-form-field appearance="outline">
                           <mat-label>Partcipant Perc</mat-label>
-                          <input matInput [formControlName]="2" placeholder="Enter SI" />
+                          <input matInput [formControlName]="2" placeholder="Partcipant Percentage" />
+                          <mat-error *ngIf="partcipantData.errors?.['required']  || (partcipantData.touched && partcipantData.dirty)">
+                            Please Enter Partcipant Percentage
+                          </mat-error>
                         </mat-form-field>
         
                         <mat-form-field appearance="outline">
                           <mat-label>SI </mat-label>
-                          <input matInput [formControlName]="3" placeholder="Enter Rate" />
+                          <input matInput [formControlName]="3" placeholder="Enter SI" />
+                          <mat-error *ngIf="partcipantData.errors?.['required']  || (partcipantData.touched && partcipantData.dirty)">
+                            Please Enter SI
+                          </mat-error>
                         </mat-form-field>
         
                         <mat-form-field appearance="outline">
                           <mat-label>Premium </mat-label>
-                          <input matInput [formControlName]="4" placeholder="Enter Rate" />
+                          <input matInput [formControlName]="4" placeholder="Enter Premium" />
+                          <mat-error *ngIf="partcipantData.errors?.['required']  || (partcipantData.touched && partcipantData.dirty)">
+                            Please Enter Premium
+                          </mat-error>
                         </mat-form-field>
         
                         <mat-form-field appearance="outline">
                           <mat-label>Over Premium </mat-label>
-                          <input matInput [formControlName]="5" placeholder="Enter Premium" />
+                          <input matInput [formControlName]="5" placeholder="Enter Over Premium" />
+                          <mat-error *ngIf="partcipantData.errors?.['required']  || (partcipantData.touched && partcipantData.dirty)">
+                            Please Enter Over Premium
+                          </mat-error>
                         </mat-form-field>
                         
                        </div>
@@ -216,6 +244,9 @@
                                           {{ option.value }}
                                         </mat-option>
                                       </mat-select>
+                                      <mat-error *ngIf="commissionData.errors?.['required']  || (commissionData.touched && commissionData.dirty)">
+                                        Please select a Commission Code
+                                      </mat-error>
                                     </mat-form-field>
                     
                                     <mat-form-field appearance="outline">
@@ -225,16 +256,25 @@
                                           {{ option.value }}
                                         </mat-option>
                                       </mat-select>
+                                      <mat-error *ngIf="commissionData.errors?.['required']  || (commissionData.touched && commissionData.dirty)">
+                                        Please select a Commission Type
+                                      </mat-error>
                                     </mat-form-field>
                     
                                    <mat-form-field appearance="outline">
                                      <mat-label>Commission Per </mat-label>
-                                     <input matInput [formControlName]="2" placeholder="Enter Rate" />
+                                     <input matInput [formControlName]="2" placeholder="Enter Percentage" />
+                                     <mat-error *ngIf="commissionData.errors?.['required']  || (commissionData.touched && commissionData.dirty)">
+                                      Please Enter Commission Percentage
+                                    </mat-error>
                                    </mat-form-field>
                     
                                    <mat-form-field appearance="outline">
                                      <mat-label>Commission Amount </mat-label>
-                                     <input matInput [formControlName]="3" placeholder="Enter Rate" />
+                                     <input matInput [formControlName]="3" placeholder="Enter Amount" />
+                                     <mat-error *ngIf="commissionData.errors?.['required']  || (commissionData.touched && commissionData.dirty)">
+                                      Please Enter Commission Amount
+                                    </mat-error>
                                    </mat-form-field>
                                    
                                   </div>
@@ -244,7 +284,7 @@
                           </div>
                      
                           <div class="btn-container">
-                            <button class="save-btn" (click)="commissionFormSubmit()"><i class="fa-solid fa-floppy-disk"></i></button> 
+                            <button [ngClass]="commissionForm.invalid ? 'invalid-btn' : 'save-btn'" [disabled]="commissionForm.invalid"  (click)="commissionFormSubmit()"><i class="fa-solid fa-floppy-disk"></i></button> 
                             <button class="save-btn" (click)="addCommissionsFrom()">
                               <i class="fa-solid fa-plus"></i>
                             </button>
@@ -279,6 +319,9 @@
                                           {{ option.value }}
                                         </mat-option>
                                       </mat-select>
+                                      <mat-error *ngIf="taxData.errors?.['required']  || (taxData.touched && taxData.dirty)">
+                                        Please select a Tax Details
+                                      </mat-error>
                                     </mat-form-field>
                     
                                     <mat-form-field appearance="outline">
@@ -288,16 +331,25 @@
                                           {{ option.value }}
                                         </mat-option>
                                       </mat-select>
+                                      <mat-error *ngIf="taxData.errors?.['required']  || (taxData.touched && taxData.dirty)">
+                                        Please select a Tax Type
+                                      </mat-error>
                                     </mat-form-field>
                     
                                    <mat-form-field appearance="outline">
                                      <mat-label>Tax Perc </mat-label>
-                                     <input matInput [formControlName]="2" placeholder="Enter Rate" />
+                                     <input matInput [formControlName]="2" placeholder="Enter Percentage" />
+                                     <mat-error *ngIf="taxData.errors?.['required']  || (taxData.touched && taxData.dirty)">
+                                      Please Enter Tax Percentage
+                                    </mat-error>
                                    </mat-form-field>
                     
                                    <mat-form-field appearance="outline">
                                      <mat-label>Tax Amount </mat-label>
-                                     <input matInput [formControlName]="3" placeholder="Enter Rate" />
+                                     <input matInput [formControlName]="3" placeholder="Enter Amount" />
+                                     <mat-error *ngIf="taxData.errors?.['required']  || (taxData.touched && taxData.dirty)">
+                                      Please Enter Tax Amount
+                                    </mat-error>
                                    </mat-form-field>
                                   </div>
                                 </div>
@@ -306,7 +358,7 @@
                           </div>
                      
                           <div class="btn-container">
-                            <button class="save-btn" (click)="taxFormSubmit()"><i class="fa-solid fa-floppy-disk"></i></button> 
+                            <button  [ngClass]="taxForm.invalid ? 'invalid-btn' : 'save-btn'" [disabled]="taxForm.invalid" (click)="taxFormSubmit()"><i class="fa-solid fa-floppy-disk"></i></button> 
                             <button  class="save-btn" (click)="addTaxForm()">
                               <i class="fa-solid fa-plus"></i>
                             </button>
@@ -322,13 +374,13 @@
                   </div>
                 </form>
               </div>
-         
+     
               <div class="btn-container">
-                <button class="save-btn" (click)="partcipantSubmitForm()"><i class="fa-solid fa-floppy-disk"></i></button> 
+                <button  [ngClass]="partcipantForm.invalid ? 'invalid-btn' : 'save-btn'" [disabled]="partcipantForm.invalid" (click)="partcipantSubmitForm()"><i class="fa-solid fa-floppy-disk"></i></button> 
                 <button  class="save-btn" (click)="addPartcipant()">
                   <i class="fa-solid fa-plus"></i>
-                </button>
-                <button  class="save-btn" (click)="closePanelPartcipant(i);">
+                </button> 
+                <button  class="save-btn" (click)="closePanelPartcipant(idx);">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </div>
@@ -340,45 +392,36 @@
 
 
     
-      <div *ngIf="riBtn">
-        <mat-tab-group 
-        (selectedIndexChange)="onTabChange($event)">
-          <mat-tab *ngFor="let tab of tabs" [label]="tab">
-          </mat-tab>
-          <!-- <mat-tab label="Section 1"></mat-tab>
-          <mat-tab label="Section 2"></mat-tab> -->
-        </mat-tab-group>
-      
-      <div class="fac-cover-details" *ngIf="selectedTabIndex  === 0">
-       <div class="cover-container">
-        <span class="cover-header">FAC Cover Details</span>
-        <span class="cover-details">Risk Details</span>
-       </div>
+    <div *ngIf="riBtn">
+      <mat-tab-group (selectedIndexChange)="onTabChange($event)">
+        <mat-tab *ngFor="let tab of tabs; index as i" [label]="tab">
+        </mat-tab>
+      </mat-tab-group>
+    
+      <div class="fac-cover-details" *ngIf="tabs[selectedTabIndex]">
+        <div class="cover-container">
+          <span class="cover-header">FAC Cover Details</span>
+          <span class="cover-details">Risk Details</span>
+        </div>
+    
         <mat-accordion>
-          <!-- Risk Section (Example for Risk Id 2) -->
-          <mat-expansion-panel expanded>
+          <mat-expansion-panel *ngFor="let risk of risks[selectedTabIndex]" [expanded]="true">
             <mat-expansion-panel-header>
               <div class="risk-header">
-                <span class="risk-id">Risk Id - 2</span>
-                <mat-chip ><span style="color: #ffffff;">2 Covers</span></mat-chip>
+                <span class="risk-id">Risk Id - {{ risk.id }}</span>
+                <mat-chip><span style="color: #ffffff;">{{ risk.covers.length }} Covers</span></mat-chip>
               </div>
             </mat-expansion-panel-header>
-      
-            <div class="risk-description">Risk Description</div>
-      
+    
+            <div class="risk-description">{{ risk.description }}</div>
+    
             <div class="cover-details">
               <mat-chip-set>
-                <span>
-                  <mat-chip *ngFor="let currency of currencies" 
-                            [removable]="true" 
-                           >
-                    <span style="color:#ffffff;">{{ currency }}</span>
-                  </mat-chip>
-                </span>
+                <mat-chip *ngFor="let currency of risk.currencies" [removable]="true">
+                  <span style="color:#ffffff;">{{ currency }}</span>
+                </mat-chip>
               </mat-chip-set>
-              
-              
-      
+    
               <table class="cover-table">
                 <thead>
                   <tr>
@@ -399,50 +442,40 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr >
-                    <td>1</td>
-                    <td><b>Description</b></td>
-                    <td>30%</td>
-                    <td><mat-form-field appearance="outline"><input matInput value="10000"></mat-form-field></td>
-                    <td>40%</td>
-                    <td>
-                      <mat-form-field appearance="outline">
-                        <input matInput  value="100000" />
-                      </mat-form-field>
-                    </td>
-                    <td>
-                      <mat-form-field appearance="outline">
-                        <input matInput  value="100000" />
-                      </mat-form-field>
-                    </td>
-                    <td><mat-form-field appearance="outline"><input matInput value="10000000"></mat-form-field></td>
-                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
-                    <td><mat-checkbox class="custom-checkbox" checked></mat-checkbox></td>
-                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
-                    <td><mat-form-field appearance="outline"><input matInput [(ngModel)]="percentageAll" value="3"></mat-form-field></td>
-                    <td><mat-form-field appearance="outline"><input matInput value="1"></mat-form-field></td>
+                  <tr *ngFor="let cover of risk.covers">
+                    <td>{{ cover.id }}</td>
+                    <td><b>{{ cover.description }}</b></td>
+                    <td>{{ cover.cqs }}</td>
+                    <td><mat-form-field appearance="outline"><input matInput PercentageDirective  [(ngModel)]="percentageAll" [value]="cover.fac"></mat-form-field></td>
+                    <td>{{ cover.tty }}</td>
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.si"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.premium"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facSi"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.uwRate"></mat-form-field></td>
+                    <td><mat-checkbox class="custom-checkbox" [checked]="cover.rateYn"></mat-checkbox></td>
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facRate"></mat-form-field></td>
+                    <!-- <td><mat-form-field appearance="outline"><input matInput [(ngModel)]="percentageAll" [value]="cover.facPrem"></mat-form-field></td>           -->
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facPrem"></mat-form-field></td>  /                  
+                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facPlaceNo"></mat-form-field></td>
                     <td>
                       <button mat-icon-button class="save-btn">
                         <i class="fa-solid fa-floppy-disk"></i>
-                      </button>
+                      </button> 
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-      
+    
             <div class="action-buttons">
-              <button   class="save">Save all</button>
+              <button (click)="saveAllCovers()" class="save">Save all</button>
               <button  class="close-btn">Close</button>
             </div>
           </mat-expansion-panel>
-      
-        
-      
         </mat-accordion>
       </div>
-      
-      </div>
+    </div>
+    
       
       
     

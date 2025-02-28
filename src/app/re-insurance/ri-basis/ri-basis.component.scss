@@ -10,7 +10,8 @@
       align-items: center;
       background: #f8f9fa;
       border-radius: 8px;
-      padding: 10px;
+      // padding: 10px;
+      margin-bottom: -3px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   
       .policy-details {
@@ -28,6 +29,7 @@
           strong{
             font-size: large;
             font-weight: 500;
+            padding: 10px;
           }
         }
       }
@@ -57,20 +59,20 @@
         }
       }
   
-      .save-btn {
-        margin-top: -30px;
-        background: #001f7f;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: 0.3s;
-  
-        &:hover {
-          background: #0033aa;
-        }
-      }
+        // .save-btn {
+        //   margin-top: -30px;
+        //   background: #001f7f;
+        //   color: #fff;
+        //   border: none;
+        //   padding: 10px 20px;
+        //   border-radius: 6px;
+        //   cursor: pointer;
+        //   transition: 0.3s;
+    
+        //   &:hover {
+        //     background: #0033aa;
+        //   }
+        // }
     }
   }
 
@@ -93,7 +95,6 @@
     .facPlacements{
       display: flex !important;
     }
-
     // partcipant
     .partcipant-heading{
       font-size: larger;
@@ -130,6 +131,7 @@
         width: 10% !important;
         margin-top: 5px !important;
       }
+    
   }
 
     .tax-container{
@@ -172,6 +174,7 @@
     margin-top: 0px !important;
   }
   }
+  
   }
   .btn-container{
     display: flex;
@@ -190,6 +193,16 @@
         align-items: center;
         justify-content: center;
         
+      }
+      .invalid-btn{
+        background-color: #3365e7 !important;
+        color: white !important;
+        border-radius: 10px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
   }
 
@@ -303,7 +316,7 @@
     background: #f8f9fc; // Light background color
     padding: 16px 24px;
     border-radius: 12px;
-    margin-top: 5px;
+    margin-top: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   
     ::ng-deep .mat-select{
@@ -481,6 +494,24 @@
       font-weight: bold;
      
     }
+    .save-btn {
+      background-color: #00237d !important; // Dark blue background
+      color: white !important; // White icon color
+      border-radius: 10px; // Rounded corners
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    
+      mat-icon {
+        font-size: 20px; // Adjust icon size
+      }
+    
+      &:hover {
+        background-color: #001a5e !important; // Darker blue on hover
+      }
+    }
   }
   .mat-mdc-tab-group {
     margin-top: 30px;
@@ -490,24 +521,7 @@
 }
 
 
-.save-btn {
-  background-color: #00237d !important; // Dark blue background
-  color: white !important; // White icon color
-  border-radius: 10px; // Rounded corners
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  mat-icon {
-    font-size: 20px; // Adjust icon size
-  }
-
-  &:hover {
-    background-color: #001a5e !important; // Darker blue on hover
-  }
-}
 .fac-select{
   margin-top: 10px;
 }
