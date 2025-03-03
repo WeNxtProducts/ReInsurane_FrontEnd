@@ -26,12 +26,20 @@
           font-size: 14px;
           color: #333;
           font-weight: 400;
-          strong{
-            font-size: large;
-            font-weight: 500;
-            padding: 10px;
+        
+          strong {
+            font-size: 16px;  
+            font-weight: 600;
+            padding-bottom: 5px;
+          }
+        
+          span {
+            font-size: 14px;
+            font-weight: 400;
+            color: #000; 
           }
         }
+        
       }
       
     }
@@ -155,6 +163,7 @@
     }
   }
   .commission-container{
+    margin-top: 20px !important;
     margin-bottom: 10px;
     .mat-expansion-panel:not([class*=mat-elevation-z]) {
       margin:0px 0px 15px;
@@ -333,12 +342,18 @@
     .fac-percentage {
       width: 250px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       margin-right: 50px;
       margin-top: 10px;
       
-  
+      ::ng-deep .mat-mdc-form-field-subscript-wrapper{
+        display: none !important;
+      }
+      .mat-mdc-form-field-error {
+        font-size: 14px !important;
+      }
       .custom-input {
         width: 100%;
   

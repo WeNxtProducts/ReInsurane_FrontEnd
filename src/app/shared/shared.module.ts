@@ -19,7 +19,6 @@ import { LoadingModule } from '../loading/loading.module';
 
 
 
-import { PercentageDirective } from '../directive/percentage.directive';
 
 
 
@@ -29,7 +28,7 @@ import { PercentageDirective } from '../directive/percentage.directive';
 
 @NgModule({
   declarations: [
-    PercentageDirective
+    
   ],
   imports: [
     CommonModule,
@@ -67,10 +66,6 @@ import { PercentageDirective } from '../directive/percentage.directive';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-
-
-    // directive
-    PercentageDirective,
   ]
 })
 export class SharedModule { }

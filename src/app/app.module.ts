@@ -10,6 +10,7 @@ import { SharedModule } from './shared/shared.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { HeaderComponent } from './header/header.component';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
@@ -23,7 +24,9 @@ import { HeaderComponent } from './header/header.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(),
+    ToastrModule.forRoot(),
     SharedModule
+    
   ],
   providers: [
     provideClientHydration(),
