@@ -3,16 +3,39 @@
     <div class="fac-header">
       <div class="policy-details">
         <div class="detail-box">
-          <strong>Policy Number:</strong> 
-          <span>P10101/010101/000101</span>
+          <strong>Policy Number & Idx:</strong> 
+          <span>
+            <mat-form-field class="width">
+              <input
+                matInput
+                placeholder="Policy Number"
+                aria-label="Policy"
+                [matAutocomplete]="auto"
+                [formControl]="policyControl"
+                required
+              />
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="let policy of filteredCountry | async"
+                  [value]="policy"
+                >
+                  <span>{{policy}}</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </span>
         </div>
         <div class="detail-box">
-          <strong>Endorsement Number & Idx:</strong> 
+          <strong>Endorsement Number:</strong> 
           <span>E01/0101/10101/10101-10-1</span>
         </div>
-        <div class="detail-box">
+        <!-- <div class="detail-box">
           <strong>Division & Department:</strong> 
           <span>10 - Phoenix, Motor</span>
+        </div> -->
+        <div class="detail-box">
+          <strong>Start & End Date:</strong>
+          <span> 12/12/2020 - 12/12/2021</span>
         </div>
         <div class="detail-box">
           <strong>FAC Basis :</strong>
@@ -23,54 +46,46 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+
         </div>
         <div class="detail-box">
-          <strong>Start & End Date:</strong>
-          <span> 12/12/2020 - 12/12/2021</span>
-        </div>
-      </div>
-
-    </div>
-  
-       <!-- percent all risk -->
-
-       <div class="form-container">
-        <!-- Checkbox Options -->
-        <div class="options">
-          <mat-checkbox class="custom-checkbox" color="primary"  [(ngModel)]="isPresentAllRisk" checked>
-            Percentage All Risk
-          </mat-checkbox>
-          <mat-checkbox class="custom-checkbox" color="primary" (change)="singlePlacementVerify()" [(ngModel)]="isSinglePlacement" checked>
-            Single Placement
-          </mat-checkbox>
-
-          <mat-checkbox class="custom-checkbox" color="primary"  [(ngModel)]="isPlaceWiseAct" checked>
-            Place Wise Accounting
-          </mat-checkbox>
-        </div>
-
-      
-        <!-- Input Field -->
-        <div class="fac-percentage" >
-          <mat-form-field appearance="outline" class="custom-input" >
+          <strong>FAC Percentage :</strong>
+          <mat-form-field appearance="outline" class="fac-select" >
             <mat-label>FAC percentage</mat-label>
             <input matInput (selectionchange)="updatePercentageToAll()"  [(ngModel)]="facPercentage" placeholder="Enter percentage" type="text" />
           </mat-form-field>
           <mat-error *ngIf="(facPercentage && percentageValidationToAll?.percentage)">Participant Percentage should be between 0 and 100.</mat-error>
         </div>
-      
-        <div class="btn-container">
-          <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
-          <button *ngIf="riBtn" class="back-btn" (click)="facPlacementBtn()">FAC Placement Details →</button>
-            <!-- Process Button -->
-        <button  class="process-btn">
-          Process →
-        </button>
-        </div>
       </div>
-      
- 
+      <div class="options">
+        <mat-checkbox class="custom-checkbox" color="primary"  [(ngModel)]="isPresentAllRisk" checked>
+          Percentage All Risk
+        </mat-checkbox>
+        <mat-checkbox class="custom-checkbox" color="primary" (change)="singlePlacementVerify()" [(ngModel)]="isSinglePlacement" checked>
+          Single Placement
+        </mat-checkbox>
+
+        <mat-checkbox class="custom-checkbox" color="primary"  [(ngModel)]="isPlaceWiseAct" checked>
+          Place Wise Accounting
+        </mat-checkbox>
+      </div>
+      <div class="btn-container">
+      <button  class="process-btn">
+        Fetch Detail
+      </button>
+      <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
+      </div>
+    </div>
   
+  
+    <!-- <div class="btn-container">
+      <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
+      <button *ngIf="riBtn" class="back-btn" (click)="facPlacementBtn()">FAC Placement Details →</button>
+    <button  class="process-btn">
+      Process →
+    </button>
+    </div> -->
+
     <!-- FAC Placement Details Form -->
 
     <div *ngIf="!riBtn" class="placement-form">
@@ -91,7 +106,7 @@
                       <!-- Input Fields Row -->
                       <div class="form-group row">
 
-                        <mat-form-field appearance="outline">
+                        <mat-form-field  appearance="outline">
                           <mat-label>FAC Ref Number</mat-label>
                           <input matInput [formControlName]="0" placeholder="Enter Number" />
                           <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Placement Number</mat-error>
@@ -117,28 +132,28 @@
                           <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter Rate</mat-error>
                         </mat-form-field>
   
-                        <mat-form-field appearance="outline">
+                        <!-- <mat-form-field appearance="outline">
                           <mat-label>FAC Rate </mat-label>
                           <input matInput [formControlName]="4" placeholder="FAC Rate" />
                           <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Rate</mat-error>
-                        </mat-form-field>
+                        </mat-form-field> -->
         
                         <mat-form-field appearance="outline">
                           <mat-label>FAC SI </mat-label>
-                          <input matInput [formControlName]="5" placeholder="Enter SI" />
+                          <input matInput [formControlName]="4" placeholder="Enter SI" />
                           <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter SI</mat-error>
                         </mat-form-field>
         
         
                         <mat-form-field appearance="outline">
                           <mat-label>FAC Premium </mat-label>
-                          <input matInput [formControlName]="6" placeholder="FAC Premium" />
+                          <input matInput [formControlName]="5" placeholder="FAC Premium" />
                           <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Premium</mat-error>
                         </mat-form-field>
   
   
-                        <mat-checkbox class="custom-checkbox" [formControlName]="7" color="primary" checked>
-                          Security Y/N
+                        <mat-checkbox class="custom-checkbox" [formControlName]="6" color="primary" checked>
+                          Accounting to Broker Y/N
                         </mat-checkbox>
                         <!-- <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Premium</mat-error> -->
                       </div>
@@ -146,9 +161,9 @@
                     </div>
                     <div class="btn-container">
                       <button [ngClass]="facForm.invalid ? 'invalid-btn' : 'save-btn'" [disabled]="facForm.invalid"  (click)="submitForm()"> <i class="fa-solid fa-floppy-disk"></i></button> 
-                      <button *ngIf="!isSinglePlacement" class="save-btn" (click)="addFacPlacement();">
+                      <!-- <button *ngIf="!isSinglePlacement" class="save-btn" (click)="addFacPlacement();">
                         <i class="fa-solid fa-plus"></i>
-                      </button>
+                      </button> -->
                       <button  class="save-btn" (click)="closePanelFacPlacement(i);">
                         <i class="fa-solid fa-trash"></i>
                       </button>
@@ -426,19 +441,20 @@
           <mat-expansion-panel *ngFor="let risk of risks[selectedTabIndex]" [expanded]="true">
             <mat-expansion-panel-header>
               <div class="risk-header">
-                <span class="risk-id">Risk Id - {{ risk.id }}</span>
+                <span class="risk-id">Risk Id - {{ risk.id }}</span> 
+                <span>{{ risk.description }}</span>
                 <mat-chip><span style="color: #ffffff;">{{ risk.covers.length }} Covers</span></mat-chip>
               </div>
             </mat-expansion-panel-header>
     
-            <div class="risk-description">{{ risk.description }}</div>
+            <!-- <div class="risk-description">{{ risk.description }}</div> -->
     
             <div class="cover-details">
               <mat-chip-set>
                 <mat-chip *ngFor="let currency of risk.currencies" [removable]="true">
-                  <span style="color:#ffffff;">{{ currency }}</span>
+                  <span style="color:#ffffff;">{{ currency == 'USD' ? 'SI currency ' + currency : 'Premium currency   ' + currency }}</span>
                 </mat-chip>
-              </mat-chip-set>
+              </mat-chip-set> 
     
               <table class="cover-table">
                 <thead>
@@ -450,12 +466,12 @@
                     <th>TTY %</th>
                     <th>UW SI *</th>
                     <th>Premium *</th>
-                    <th>UW Rate *</th>
-                    <th>Rate Y/N *</th>
-                    <th>FAC Rate *</th>
+                    <!-- <th>UW Rate *</th> -->
+                    <!-- <th>Rate Y/N *</th> -->
+                    <!-- <th>FAC Rate *</th> -->
                     <th>FAC SI *</th>
                     <th>FAC Prem *</th>
-                    <th>FAC Place No *</th>
+                    <th>FAC Ref No *</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -469,7 +485,7 @@
                     <td>{{ cover.cqs }}</td>
                     <!-- FAC % -->
                     <td>
-                      <mat-form-field appearance="outline">
+                      <mat-form-field style="width: 100px;" appearance="outline">
                         <input matInput   [(ngModel)]="percentageAll" [value]="cover.fac">
                       </mat-form-field>
                       <mat-error *ngIf="(percentageAll && percentageValidationToAll?.percentage)">Participant Percentage should be between 0 and 100.</mat-error>
@@ -477,21 +493,29 @@
                     <!-- TTY % -->
                     <td>{{ cover.tty }}</td>
                     <!-- UW SI  -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.si"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.si"></mat-form-field></td>
                     <!-- Premium -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.premium"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.premium"></mat-form-field></td>
                     <!-- UW Rate -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.uwRate"></mat-form-field></td>
+                    <!-- <td><mat-form-field appearance="outline"><input matInput [value]="cover.uwRate"></mat-form-field></td> -->
                     <!-- Rate Y/N -->
-                    <td><mat-checkbox class="custom-checkbox" [checked]="cover.rateYn"></mat-checkbox></td>
+                    <!-- <td><mat-checkbox class="custom-checkbox" [checked]="cover.rateYn"></mat-checkbox></td> -->
                     <!-- FAC Rate -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facRate"></mat-form-field></td>
+                    <!-- <td><mat-form-field appearance="outline"><input matInput [value]="cover.facRate"></mat-form-field></td> -->
                     <!-- FAC SI -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facSi"></mat-form-field></td>
+                    <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.facSi"></mat-form-field></td>
                     <!-- FAC Prem -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facPrem"></mat-form-field></td>           
+                    <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.facPrem"></mat-form-field></td>           
                      <!-- FAC Place No -->
-                    <td><mat-form-field appearance="outline"><input matInput [value]="cover.facPlaceNo"></mat-form-field></td>
+                    <td>
+                      <mat-form-field  class="fac-select" appearance="outline">
+                        <mat-select name="countryVaraible" (selectionChange)="numberGenerator($event)">
+                          <mat-option *ngFor="let item of facRefNo" [value]="item">
+                            {{item}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </td>
                     <td>
                       <button mat-icon-button class="save-btn">
                         <i class="fa-solid fa-floppy-disk"></i>
@@ -501,19 +525,20 @@
                 </tbody>
               </table>
             </div>
-    
             <div class="action-buttons">
               <button (click)="saveAllCovers()" class="save">Save all</button>
               <button  class="close-btn">Close</button>
             </div>
           </mat-expansion-panel>
         </mat-accordion>
+        <div class="btn-container">
+          <button  class="process-btn">
+            Process →
+          </button>
+          <button class="back-btn" (click)="facPlacementBtn()">FAC Placement Details →</button>
+        </div>
       </div>
     </div>
-    
-      
-      
-    
 
   </div>
 

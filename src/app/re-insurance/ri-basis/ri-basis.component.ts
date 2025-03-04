@@ -6,12 +6,14 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { take, takeUntil } from 'rxjs';
+import { map, Observable, startWith, take, takeUntil } from 'rxjs';
 import { UnSubscriber } from '../../const-ts/un-subscriber';
 import { DashboardData } from '../../interface/dashboardInterface';
 import { ReInsuranceService } from '../../service/re-insurance.service';
 import { CoverDetails } from '../../modal/cover-modal'; 
 import {percentageValidator} from '../../validation/percentageValidation'
+import { CommonLogicService } from '../../service/common-logic.service';
+import { ToastServiceService } from '../../service/toast-service.service';
 
 
 
@@ -44,6 +46,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   partcipantForm: FormGroup;
   taxForm: FormGroup;
   commissionForm: FormGroup;
+  policyControl : FormControl
+  filteredCountry: Observable<any[]>;
   activePanelIndex: number | null = null;
   activaPanel: number | null = null;
   taxActivePanel: number | null = null;
@@ -60,6 +64,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   percentageValidationToAll :any;
   public coverDetails = new CoverDetails()
 
+  facRefNo:any[] = [];
   tabs: string[] = ['select 1', 'select 2','select 3'];
   currencies: string[] = ['Local Currency: T2', 'Foreign Currency: T2'];
   facBasic: string[] = ['Policy', 'Risk'];
@@ -95,9 +100,28 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     ]
   ];
 
+  policyNumbers: string[] = [
+    "POL-983274",
+    "POL-472910",
+    "POL-827364",
+    "POL-165839",
+    "POL-293847",
+    "POL-756201",
+    "POL-384756",
+    "POL-948372",
+    "POL-562019",
+    "POL-102938",
+    "POL-675849",
+    "POL-495872",
+    "POL-738291",
+    "POL-849302"
+  ];
+
   constructor(
     private fb: FormBuilder,
-    private reInsuranceSer: ReInsuranceService
+    private reInsuranceSer: ReInsuranceService,
+    private commonSer : CommonLogicService,
+    private toaster : ToastServiceService
   ) {
     super();
     this.facForm = this.fb.group({
@@ -115,12 +139,33 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     this.commissionForm = this.fb.group({
       commissionData: this.fb.array([this.createCommissionControl()]),
     });
+    this.policyControl = new FormControl();
+    this.filteredCountry = this.policyControl.valueChanges.pipe(
+      startWith(''),
+      map((item) =>
+        item ? this.filtercountry(item) : this.policyNumbers.slice()
+      )
+    );
+  }
+
+  filtercountry(policy: string) {
+    let arr = this.policyNumbers.filter(
+      (item) => item.toLowerCase().indexOf(policy.toLowerCase()) === 0
+    );
+
+    // return arr.length ? arr : [{ name: 'No Item found', code: 'null' }];
+    return arr.length ? arr : ['No Item found'];
+
   }
 
   selectPolicyMethod(event:any){
    this.isPresentAllRisk = event.value == 'Policy' ? true : false;
   }
   ngOnInit(): void {
+    if(this.facRefNo.length == 0){
+      let $refNo = this.commonSer.validateAndAddNumber();
+      this.facRefNo.push($refNo)
+    }
     this.loadingCheck = true;
     this.reInsuranceSer.getDashboard().pipe(take(1),takeUntil(this.destroy$)).subscribe((data: DashboardData[]) => {
           console.log(data);
@@ -129,6 +174,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
         (error) => {
           console.log(error);
           this.loadingCheck = false;
+          console.log(error)
+          this.toaster.error(error)
         }
       );
   }
@@ -139,7 +186,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       new FormControl('',[ Validators.required]), // placementNumber
       new FormControl('', Validators.required), // si
       new FormControl('', Validators.required), // premium
-      new FormControl('', Validators.required), // facRate
+      // new FormControl('', Validators.required), // facRate
       new FormControl('', Validators.required), // facSi
       new FormControl('', Validators.required), // facPremium
       new FormControl('', Validators.required), // security
@@ -221,7 +268,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
         placementNumber: placement[1],
         si: placement[2],
         premium: placement[3],
-        facRate: placement[4],
+        // facRate: placement[4],
         facSi: placement[5],
         facPremium: placement[6],
         security: placement[7],
@@ -329,6 +376,16 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       this.percentageAll = this.facPercentage
     }
   }
+  numberGenerator(event: any) {
+    let selectedValue = event.value;
+    if (selectedValue === this.facRefNo[this.facRefNo.length - 1]) {
+      let newNumber = this.commonSer.validateAndAddNumber();
+      if (newNumber) {
+        this.facRefNo = newNumber;
+      }
+    }
+  }
+  
   saveAllCovers(){
     console.log(this.risks,'risk',this.coverDetails)
   }

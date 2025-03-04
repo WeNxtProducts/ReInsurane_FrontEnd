@@ -15,6 +15,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
+
 import { LoadingModule } from '../loading/loading.module';
 
 
@@ -48,6 +51,7 @@ import { LoadingModule } from '../loading/loading.module';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
+    MatAutocompleteModule
   ],
   exports:[
     FormsModule,
@@ -66,6 +70,7 @@ import { LoadingModule } from '../loading/loading.module';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
+    MatAutocompleteModule
   ]
 })
 export class SharedModule { }
