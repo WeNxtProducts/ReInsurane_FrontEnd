@@ -58,7 +58,6 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   selectedTabIndex: number = 0;
   isPresentAllRisk: boolean = false;
   isSinglePlacement: boolean = false;
-  isPlaceWiseAct: boolean = false;
   loadingCheck: boolean = false;
   percentageAll:number = 0;
   facPercentage:number = 0;
@@ -232,6 +231,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       new FormControl('', Validators.required), // facSi
       new FormControl('', Validators.required), // facPremium
       new FormControl('', Validators.required), // security
+      new FormControl('', Validators.required), // Place Wise Accounting
     ]);
   }
 
@@ -314,6 +314,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
         facSi: placement[3],
         facPremium: placement[4],
         security: placement[5],
+        placeWiseAct: placement[6],
       })
     );
     // this.facForm.reset();

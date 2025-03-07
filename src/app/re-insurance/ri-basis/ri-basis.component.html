@@ -67,10 +67,7 @@
         <mat-checkbox class="custom-checkbox" [disabled]="getTablePoloicyData ? true : false" color="primary" (change)="singlePlacementVerify()" [(ngModel)]="isSinglePlacement" checked>
           Single Placement
         </mat-checkbox>
-
-        <mat-checkbox class="custom-checkbox" [disabled]="getTablePoloicyData ? true : false" color="primary"  [(ngModel)]="isPlaceWiseAct" checked>
-          Place Wise Accounting
-        </mat-checkbox>
+       
       </div>
       <div class="btn-container">
       <button [disabled]="policyNoValidation" (click)="sendToDashboardData()" [ngClass]="!policyNoValidation ? 'process-btn' : 'process-btn-disable' ">
@@ -157,6 +154,10 @@
   
                         <mat-checkbox class="custom-checkbox" [formControlName]="5" color="primary" checked>
                           Accounting to Broker Y/N
+                        </mat-checkbox>
+
+                        <mat-checkbox class="custom-checkbox" [formControlName]="6" color="primary" checked>
+                          Place Wise Accounting
                         </mat-checkbox>
                         <!-- <mat-error *ngIf="facPlacements.touched && facPlacements.dirty">Please Enter FAC Premium</mat-error> -->
                       </div>
