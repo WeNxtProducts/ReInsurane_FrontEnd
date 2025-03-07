@@ -92,6 +92,16 @@
         background: #0033aa;
       }
     }
+    .process-btn-disable{
+      background:#6483e9;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 180px;
+    }
     .back-btn {
       background: #042181;
       color: #fff;
@@ -140,16 +150,23 @@
        width: 100%;
       .form-group {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: 0.5fr repeat(7, 1fr);
         gap: 20px;
         align-items: center;
         margin-bottom: 10px;
-  
+        
         label {
           font-size: 14px;
           font-weight: 600;
         }
-  
+        
+        .small-field {
+          width: 100px !important;
+        }
+      ::ng-deep .mat-mdc-form-field-infix{
+          width: 100px !important;
+        }
+        
         input,
         select {
           width: 100%;

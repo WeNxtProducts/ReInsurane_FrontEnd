@@ -6,9 +6,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { map, Observable, startWith, take, takeUntil } from 'rxjs';
+import { map, Observable, startWith, take, takeUntil, finalize, tap } from 'rxjs';
 import { UnSubscriber } from '../../const-ts/un-subscriber';
-import { DashboardData } from '../../interface/dashboardInterface';
+import { PolicyDetails } from '../../interface/dashboardInterface';
 import { ReInsuranceService } from '../../service/re-insurance.service';
 import { CoverDetails } from '../../modal/cover-modal'; 
 import {percentageValidator} from '../../validation/percentageValidation'
@@ -46,7 +46,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   partcipantForm: FormGroup;
   taxForm: FormGroup;
   commissionForm: FormGroup;
-  policyControl : FormControl
+  policyControl : FormControl;
+  facRefNoSelect : FormControl;
   filteredCountry: Observable<any[]>;
   activePanelIndex: number | null = null;
   activaPanel: number | null = null;
@@ -62,7 +63,11 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   percentageAll:number = 0;
   facPercentage:number = 0;
   percentageValidationToAll :any;
-  public coverDetails = new CoverDetails()
+  policyData:PolicyDetails[] = [];
+  $policyNo:any;
+  policyNoValidation:boolean = false;
+  getTablePoloicyData:any;
+  public coverDetails = new CoverDetails();
 
   facRefNo:any[] = [];
   tabs: string[] = ['select 1', 'select 2','select 3'];
@@ -114,7 +119,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     "POL-675849",
     "POL-495872",
     "POL-738291",
-    "POL-849302"
+    "POL-849302",
+    "12345"
   ];
 
   constructor(
@@ -162,13 +168,14 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
    this.isPresentAllRisk = event.value == 'Policy' ? true : false;
   }
   ngOnInit(): void {
+    this.facRefNoSelect = new FormControl('')
     if(this.facRefNo.length == 0){
       let $refNo = this.commonSer.validateAndAddNumber();
-      this.facRefNo.push($refNo)
+      this.facRefNo = $refNo;
     }
     this.loadingCheck = true;
-    this.reInsuranceSer.getDashboard().pipe(take(1),takeUntil(this.destroy$)).subscribe((data: DashboardData[]) => {
-          console.log(data);
+    this.reInsuranceSer.getDashboard().pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe((data:  any) => {
+          this.policyData = data.data ?? [];
           this.loadingCheck = false;
         },
         (error) => {
@@ -180,9 +187,44 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       );
   }
 
+  selectPolicyNo(policy:string){
+    this.$policyNo = policy;
+    let policyNo = this.policyData.find((x:any) => x.fh_UW_NO == policy)
+    if(policyNo && Object.keys(policyNo).length > 0){
+      this.policyNoValidation = true;
+    }else{
+      this.policyNoValidation = false;
+    }
+  }
+
+  validationPolicy(event:any){
+    let $name  = event.target.value;
+    if($name == ''){
+      this.policyNoValidation = false;
+    }
+  }
+
+  sendToDashboardData(){
+    const data = {
+      fh_UW_NO: this.$policyNo,
+      fh_END_FMD: '2025-03-06',
+      fh_END_TOD: '2025-03-07',
+      fh_BASIS: this.selectPolicy, 
+      fh_FAC_PERC: this.facPercentage,
+      fh_PERC_ALL_RSK_YN: this.isPresentAllRisk ? 1 : 0,
+      fh_SINGLE_PLACE: this.isSinglePlacement ? 1 : 0     
+  };
+      this.loadingCheck = true;
+      this.reInsuranceSer.createDashboardData(data).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data:any)=>{
+        this.getTablePoloicyData = data.data;
+        console.log(this.getTablePoloicyData,'kkkkkkkkkkkkkkk')
+      },error:(error)=>{
+        console.log(error)
+      }})
+  }
   createFacPlacementControls(): FormArray {
     return this.fb.array([
-      new FormControl('',[ Validators.required]), // facRefNo
+      // new FormControl('',[ Validators.required]), // facRefNo
       new FormControl('',[ Validators.required]), // placementNumber
       new FormControl('', Validators.required), // si
       new FormControl('', Validators.required), // premium
@@ -264,14 +306,14 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     console.log(this.facForm.value);
     let placementFormControl = this.facForm.value.facPlacements.map(
       (placement: any) => ({
-        facRefNo : placement[0],
-        placementNumber: placement[1],
-        si: placement[2],
-        premium: placement[3],
+        // facRefNo : placement[0],
+        placementNumber: placement[0],
+        si: placement[1],
+        premium: placement[2],
         // facRate: placement[4],
-        facSi: placement[5],
-        facPremium: placement[6],
-        security: placement[7],
+        facSi: placement[3],
+        facPremium: placement[4],
+        security: placement[5],
       })
     );
     // this.facForm.reset();
@@ -378,6 +420,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   }
   numberGenerator(event: any) {
     let selectedValue = event.value;
+    this.facRefNoSelect.setValue(selectedValue)
     if (selectedValue === this.facRefNo[this.facRefNo.length - 1]) {
       let newNumber = this.commonSer.validateAndAddNumber();
       if (newNumber) {

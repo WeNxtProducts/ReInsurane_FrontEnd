@@ -8,13 +8,14 @@ export class CommonLogicService {
    count = 1; 
   constructor() { }
 
-  generateNextNumber() {
-    let formattedNumber = `FAC-${String(this.count).padStart(6, '0')}`; 
-    return formattedNumber;
-}
+//   generateNextNumber() {
+//     let formattedNumber = `FAC-${String(this.count).padStart(6, '0')}`; 
+//     return formattedNumber;
+// }
 
 validateAndAddNumber() {
-  let newNumber = this.generateNextNumber();
+  // let newNumber = this.generateNextNumber();
+     let newNumber = this.count;
 
   let isValid = !this.totalCount.includes(newNumber);
   

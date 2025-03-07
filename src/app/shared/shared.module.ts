@@ -22,13 +22,6 @@ import { LoadingModule } from '../loading/loading.module';
 
 
 
-
-
-
-
-
-
-
 @NgModule({
   declarations: [
     

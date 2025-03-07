@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {provideHttpClient , withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient , withInterceptors} from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
+import { authInterceptor } from './interceptor/auth.interceptor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,7 +36,7 @@ import { ToastrModule } from 'ngx-toastr';
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptors([authInterceptor]))
   ],
   bootstrap: [AppComponent]
 })

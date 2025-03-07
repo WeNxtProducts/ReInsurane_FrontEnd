@@ -16,6 +16,12 @@
 .toast-info {
   background-color: #17a2b8 !important;
 }
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+}
 
   .mat-mdc-checkbox.custom-checkbox {
     .mdc-checkbox__background {
