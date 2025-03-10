@@ -28,3 +28,70 @@ export interface PolicyDetails {
     FH_FAC_PERC: number; // Fac percentage--screen level captured
   }
   
+
+  export interface RiskData {
+    frc_RISK_TYP: string;
+    frc_FAC_PML_SI: number;
+    frc_FAC_IDX: number;
+    frc_FAC_RATE_YN: number;
+    frc_FAC_PML_SI_ORG: number;
+    frc_END_TOD: number;
+    frc_FAC_PREM_LC: number;
+    frc_TD_SYS_ID: number;
+    frc_POL_IDX: number;
+    frc_RATE_PER: number;
+    frc_UW_RATE: number;
+    frc_SI_ORG: number;
+    frc_BUS_TYP: string;
+    frc_TD_TTY_ID: string;
+    frc_FAC_PERC: number;
+    frc_PLACE_REF_NO: number;
+    frc_PREM_LC: number;
+    frc_FAC_SI_LC: number;
+    frc_RISK_REF_NO: number;
+    frc_PML_SI_LC_ORG: number;
+    frc_SI_LC_ORG: number;
+    frc_SI_LC: number;
+    frc_RI_SI_YN: number;
+    frc_PML_SI_ORG: number;
+    frc_REC_TYP: string;
+    frc_PML_SI_LC: number;
+    frc_OVR_PREM_LC: number;
+    frc_SPL_PREM_LC: number;
+    frc_PML_PERC: number;
+    frc_OVR_PREM: number;
+    frc_FH_SYS_ID: number;
+    frc_FAC_SI: number;
+    frc_FAC_SI_ORG: number;
+    frc_FMD: number;
+    frc_FAC_RATE: number;
+    frc_FAC_PML_SI_LC_ORG: number;
+    frc_UR_SYS_ID: number;
+    frc_PREM: number;
+    frc_END_FMD: number;
+    frc_UW_SYS_ID: number;
+    frc_TOD: number;
+    frc_RATE_TYP: string;
+    frc_SYS_ID: number;
+    frc_WAR_YN: number;
+    frc_PREM_LC_ORG: number;
+    frc_PREM_ORG: number;
+    frc_PROD_ID: string;
+    frc_FAC_PREM_LC_ORG: number;
+    frc_PML_SI: number;
+    frc_FAC_PML_SI_LC: number;
+    frc_CVR_CODE: string;
+    frc_FAC_PREM: number;
+    frc_FAC_PREM_ORG: number;
+    frc_RSK_CAT: string;
+    frc_SPL_PREM: number;
+    frc_SI: number;
+    frc_FAC_SI_LC_ORG: number;
+  }
+
+  
+export interface SingleCover{
+  frc_SYS_ID : string;
+  frc_FAC_RATE: string;
+  frc_PLACE_REF_NO : string;
+}  

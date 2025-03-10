@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -41,7 +41,7 @@ function percentageValid  (control:FormControl): { [key: string]: boolean } | nu
   templateUrl: './ri-basis.component.html',
   styleUrl: './ri-basis.component.scss',
 })
-export class RiBasisComponent extends UnSubscriber implements OnInit {
+export class RiBasisComponent extends UnSubscriber implements OnInit, AfterViewInit {
   facForm: FormGroup;
   partcipantForm: FormGroup;
   taxForm: FormGroup;
@@ -66,10 +66,12 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   $policyNo:any;
   policyNoValidation:boolean = false;
   getTablePoloicyData:any;
+  facData: any = {};
+  singleCoverValue:number = 0;
   public coverDetails = new CoverDetails();
 
   facRefNo:any[] = [];
-  tabs: string[] = ['select 1', 'select 2','select 3'];
+  tabs: string[] = [];
   currencies: string[] = ['Local Currency: T2', 'Foreign Currency: T2'];
   facBasic: string[] = ['Policy', 'Risk'];
   securityOption = [{ value: 'Yes' }, { value: 'No' }];
@@ -83,27 +85,27 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   taxCodes = [{ value: 'Tax Code 1' }, { value: 'Tax Code 2' }];
   taxTypes = [{ value: 'Tax Type 1' }, { value: 'Tax Type 2' }];
 
-  risks = [
-    [
-      { id: 1, description: 'Risk 1 Description', expanded: true, currencies: ['USD', 'INR'], covers: [
-          { id: 1, description: 'Cover 1', cqs: '30%', fac: 10000, tty: '40%', si: 100000, premium: 100000, facSi: 10000000, uwRate: 1, rateYn: true, facRate: 1, facPrem: 3, facPlaceNo: 1 }
-        ]
-      }
-    ],
-    [
-      { id: 2, description: 'Risk 2 Description', expanded: false, currencies: ['EUR', 'GBP'], covers: [
-          { id: 2, description: 'Cover 2', cqs: '25%', fac: 20000, tty: '50%', si: 200000, premium: 200000, facSi: 20000000, uwRate: 2, rateYn: false, facRate: 2, facPrem: 4, facPlaceNo: 2 }
-        ]
-      }
-    ],
-    [
-      { id: 3, description: 'Risk 3 Description', expanded: false, currencies: ['JPY', 'AUD'], covers: [
-          { id: 3, description: 'Cover 3', cqs: '20%', fac: 30000, tty: '60%', si: 300000, premium: 300000, facSi: 30000000, uwRate: 3, rateYn: true, facRate: 3, facPrem: 5, facPlaceNo: 3 }
-        ]
-      }
-    ]
-  ];
-
+  // risks = [
+  //   [
+  //     { id: 1, description: 'Risk 1 Description', expanded: true, currencies: ['USD', 'INR'], covers: [
+  //         { id: 1, description: 'Cover 1', cqs: '30%', fac: 10000, tty: '40%', si: 100000, premium: 100000, facSi: 10000000, uwRate: 1, rateYn: true, facRate: 1, facPrem: 3, facPlaceNo: 1 }
+  //       ]
+  //     }
+  //   ],
+  //   [
+  //     { id: 2, description: 'Risk 2 Description', expanded: false, currencies: ['EUR', 'GBP'], covers: [
+  //         { id: 2, description: 'Cover 2', cqs: '25%', fac: 20000, tty: '50%', si: 200000, premium: 200000, facSi: 20000000, uwRate: 2, rateYn: false, facRate: 2, facPrem: 4, facPlaceNo: 2 }
+  //       ]
+  //     }
+  //   ],
+  //   [
+  //     { id: 3, description: 'Risk 3 Description', expanded: false, currencies: ['JPY', 'AUD'], covers: [
+  //         { id: 3, description: 'Cover 3', cqs: '20%', fac: 30000, tty: '60%', si: 300000, premium: 300000, facSi: 30000000, uwRate: 3, rateYn: true, facRate: 3, facPrem: 5, facPlaceNo: 3 }
+  //       ]
+  //     }
+  //   ]
+  // ];
+risks:any [] = []
   policyNumbers: string[] = [
     "POL-983274",
     "POL-472910",
@@ -119,6 +121,7 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
     "POL-495872",
     "POL-738291",
     "POL-849302",
+    "POL-948374",
     "12345"
   ];
 
@@ -167,33 +170,42 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
    this.isPresentAllRisk = event.value == 'Policy' ? true : false;
   }
   ngOnInit(): void {
+    this.getByRiskById();
     this.facRefNoSelect = new FormControl('')
     if(this.facRefNo.length == 0){
       let $refNo = this.commonSer.validateAndAddNumber();
       this.facRefNo = $refNo;
     }
-    this.loadingCheck = true;
-    this.reInsuranceSer.getDashboard().pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe((data:  any) => {
-          this.policyData = data.data ?? [];
-          this.loadingCheck = false;
-        },
-        (error) => {
-          console.log(error);
-          this.loadingCheck = false;
-          console.log(error)
-          this.toaster.error(error)
-        }
-      );
+    let $headerData = JSON.parse(localStorage.getItem('headerData'));
+    if(Object.keys($headerData).length > 0){
+      this.policyControl.setValue($headerData?.fh_UW_NO);
+      this.selectPolicy = $headerData?.fh_BASIS;
+      this.facPercentage = $headerData?.fh_FAC_PERC;
+      this.isPresentAllRisk = $headerData?.fh_PERC_ALL_RSK_YN ? true : false ;
+      this.isSinglePlacement = $headerData?.fh_SINGLE_PLACE ? true : false ;
+    }
   }
-
+  trackByFn(index: number, item: any) {
+    return item.frc_UR_RSK_ID; 
+  }
   selectPolicyNo(policy:string){
     this.$policyNo = policy;
-    let policyNo = this.policyData.find((x:any) => x.fh_UW_NO == policy)
-    if(policyNo && Object.keys(policyNo).length > 0){
-      this.policyNoValidation = true;
-    }else{
-      this.policyNoValidation = false;
-    }
+    this.loadingCheck = true;
+    this.reInsuranceSer.getDashboard(this.$policyNo).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data:any)=>{
+      this.policyData = data.data ?? [];
+       let policyNo = this.policyData.find((x:any) => x.fh_UW_NO == policy)
+      if (policyNo && Object.keys(policyNo).length > 0) {
+        this.policyNoValidation = true;
+      } else {
+        this.policyNoValidation = false;
+      }
+      this.loadingCheck = false;
+    },error:(error)=>{
+      console.log(error);
+      this.loadingCheck = false;
+      console.log(error)
+      this.toaster.error(error)
+    }})
   }
 
   validationPolicy(event:any){
@@ -204,8 +216,9 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
   }
 
   sendToDashboardData(){
-    const data = {
+    const obj = {
       fh_UW_NO: this.$policyNo,
+      fh_POL_IDX : 5478,
       fh_END_FMD: '2025-03-06',
       fh_END_TOD: '2025-03-07',
       fh_BASIS: this.selectPolicy, 
@@ -214,12 +227,31 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       fh_SINGLE_PLACE: this.isSinglePlacement ? 1 : 0     
   };
       this.loadingCheck = true;
-      this.reInsuranceSer.createDashboardData(data).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data:any)=>{
+      this.reInsuranceSer.createDashboardData(obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data:any)=>{
         this.getTablePoloicyData = data.data;
-        console.log(this.getTablePoloicyData,'kkkkkkkkkkkkkkk')
+        let $policyId:any = Object.values(this.getTablePoloicyData)
+        localStorage.setItem('policyNo' , JSON.stringify($policyId[0]?.risks[0].frc_FH_SYS_ID))
+        localStorage.setItem('headerData',JSON.stringify(obj))
+        this.tabs = Object.keys(this.getTablePoloicyData).map(item => item)
+        this.risks = Object.values(this.getTablePoloicyData)
       },error:(error)=>{
         console.log(error)
       }})
+  }
+
+  getByRiskById(){
+    this.loadingCheck = true;
+    let policyId = JSON.parse(localStorage.getItem('policyNo'))
+    if(policyId != null){
+      this.reInsuranceSer.getRiskDataById(policyId).pipe(take(1),takeUntil(this.destroy$),finalize(()=>this.loadingCheck = false)).subscribe({next:(data)=>{
+        this.getTablePoloicyData = data.data;
+        this.tabs = Object.keys(this.getTablePoloicyData).map(item => item)
+        this.risks = Object.values(this.getTablePoloicyData)
+      },error:(err)=>{
+        console.log(err)
+      }})
+    }
+   
   }
   createFacPlacementControls(): FormArray {
     return this.fb.array([
@@ -429,8 +461,85 @@ export class RiBasisComponent extends UnSubscriber implements OnInit {
       }
     }
   }
+
+  updateFACPercentage(value: number, tabIndex: number, riskIndex: number, coverIndex: number) {
+    if (value < 0 || value > 100) {
+      this.risks[tabIndex]['risks'][riskIndex].covers[coverIndex].fac = 0;
+    }
   
-  saveAllCovers(){
-    console.log(this.risks,'risk',this.coverDetails)
+    if (!this.facData[tabIndex]) {
+      this.facData[tabIndex] = {};
+    }
+  
+    if (!this.facData[tabIndex][riskIndex]) {     
+      this.facData[tabIndex][riskIndex] = {};
+    }
+  
+    if (typeof this.facData[tabIndex][riskIndex][coverIndex] !== 'object') {
+      this.facData[tabIndex][riskIndex][coverIndex] = { frc_FAC_RATE: 0, frc_PLACE_REF_NO: '' };
+    }
+  
+    this.facData[tabIndex][riskIndex][coverIndex].frc_FAC_RATE = value;
   }
+  
+  
+  updateFACRefNo(value: number, tabIndex: number, riskIndex: number, coverIndex: number, item: any) {
+    this.singleCoverValue = value;
+  
+    if (!this.facData[tabIndex]) {
+      this.facData[tabIndex] = {};
+    }
+  
+    if (!this.facData[tabIndex][riskIndex]) {
+      this.facData[tabIndex][riskIndex] = {};
+    }
+  
+    if (typeof this.facData[tabIndex][riskIndex][coverIndex] !== 'object') {
+      this.facData[tabIndex][riskIndex][coverIndex] = { frc_FAC_RATE: 0, frc_PLACE_REF_NO: '' };
+    }
+  
+    this.facData[tabIndex][riskIndex][coverIndex].frc_PLACE_REF_NO = value;
+    this.facData[tabIndex][riskIndex][coverIndex].frc_SYS_ID = item?.frc_SYS_ID;
+  }
+  
+
+
+saveAllCovers() {
+  let obj:any = Object.values(this.facData).flatMap(risk =>
+    Object.values(risk).flatMap(item => Object.values(item))
+  );
+  
+  this.loadingCheck = true;
+  this.reInsuranceSer.updateBulkCover(obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{
+    console.log(data)
+  },error:(error)=>{
+    console.log(error)
+  }})
+}
+
+singleCoverUpdate(item:any){
+  let obj:any = {};
+  obj.frc_FAC_RATE =item.fac;
+  obj.frc_PLACE_REF_NO = this.singleCoverValue
+  obj.frc_SYS_ID = item.frc_SYS_ID
+
+  this.loadingCheck = true;
+  this.reInsuranceSer.updateSingleCover(obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{
+    console.log(data)
+  },error:(error)=>{
+    console.log(error)
+  }})
+
+}
+
+ngAfterViewInit(): void {
+  setTimeout(() => {
+    this.risks.forEach((tab, tabIndex) => {
+      tab.risks.forEach((risk: any, riskIndex: number) => {
+        risk.expanded = tabIndex === this.selectedTabIndex && riskIndex === 0; 
+      });
+    });
+  });
+  
+ }
 }

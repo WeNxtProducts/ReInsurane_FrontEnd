@@ -55,7 +55,7 @@
           <strong>FAC Percentage :</strong>
           <mat-form-field appearance="outline" class="fac-select" >
             <mat-label>FAC percentage</mat-label>
-            <input matInput (selectionchange)="updatePercentageToAll()" [readonly]="getTablePoloicyData ? true : false" [(ngModel)]="facPercentage" placeholder="Enter percentage" type="text" />
+            <input matInput (selectionchange)="updatePercentageToAll()" [readonly]="getTablePoloicyData  ? true : false" [(ngModel)]="facPercentage" placeholder="Enter percentage" type="text" />
           </mat-form-field>
           <mat-error *ngIf="(facPercentage && percentageValidationToAll?.percentage)">Participant Percentage should be between 0 and 100.</mat-error>
         </div>
@@ -70,7 +70,7 @@
        
       </div>
       <div class="btn-container">
-      <button [disabled]="policyNoValidation" (click)="sendToDashboardData()" [ngClass]="!policyNoValidation ? 'process-btn' : 'process-btn-disable' ">
+      <button [disabled]="policyNoValidation" (click)="sendToDashboardData()" [disabled]="getTablePoloicyData ? true : false" [ngClass]="policyNoValidation ? 'process-btn' : 'process-btn-disable' ">
         Fetch Detail
       </button>
       <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
@@ -429,7 +429,7 @@
 
 
     
- <!-- <ng-container *ngIf="getTablePoloicyData; else noData " > -->
+ <ng-container *ngIf="getTablePoloicyData; else noData " >
   <div *ngIf="riBtn">
     <mat-tab-group (selectedIndexChange)="onTabChange($event)">
       <mat-tab *ngFor="let tab of tabs; index as i" [label]="tab">
@@ -443,12 +443,12 @@
       </div>
   
       <mat-accordion>
-        <mat-expansion-panel *ngFor="let risk of risks[selectedTabIndex]" [expanded]="true">
+        <mat-expansion-panel *ngFor="let risk of risks[selectedTabIndex]['risks'] ; index as i ; trackBy: trackByFn" [expanded]="risks[selectedTabIndex]['risks'][i].expanded">
           <mat-expansion-panel-header>
             <div class="risk-header">
-              <span class="risk-id">Risk Id - {{ risk.id }}</span> 
+              <span class="risk-id">{{risk.frc_UR_RSK_ID}} - {{ risk.frc_RISK_TYP }}</span> 
               <span>{{ risk.description }}</span>
-              <mat-chip><span style="color: #ffffff;">{{ risk.covers.length }} Covers</span></mat-chip>
+              <mat-chip><span style="color: #ffffff;">{{ risks[selectedTabIndex]['risks'][i].covers.length }} Covers</span></mat-chip>
             </div>
           </mat-expansion-panel-header>
   
@@ -481,26 +481,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let cover of risk.covers">
+                <tr *ngFor="let cover of risk.covers; index as idx">
                   <!-- Cover -->
-                  <td>{{ cover.id }}</td>
+                  <td>{{ idx + 1 }}</td>
                   <!-- Cover Description -->
-                  <td><b>{{ cover.description }}</b></td>
+                  <td><b>{{ cover.frc_CVR_CODE }}</b></td>
                   <!-- CQS % -->
                   <td>{{ cover.cqs }}</td>
                   <!-- FAC % -->
                   <td>
                     <mat-form-field style="width: 100px;" appearance="outline">
-                      <input matInput   [(ngModel)]="percentageAll" [value]="cover.fac">
+                      <input matInput   [(ngModel)]="cover.fac"  (ngModelChange)="updateFACPercentage(cover.fac, selectedTabIndex , idx , i)">
                     </mat-form-field>
                     <mat-error *ngIf="(percentageAll && percentageValidationToAll?.percentage)">Participant Percentage should be between 0 and 100.</mat-error>
                   </td>
                   <!-- TTY % -->
                   <td>{{ cover.tty }}</td>
                   <!-- UW SI  -->
-                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.si"></mat-form-field></td>
+                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.frc_SI"></mat-form-field></td>
                   <!-- Premium -->
-                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.premium"></mat-form-field></td>
+                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.frc_PREM"></mat-form-field></td>
                   <!-- UW Rate -->
                   <!-- <td><mat-form-field appearance="outline"><input matInput [value]="cover.uwRate"></mat-form-field></td> -->
                   <!-- Rate Y/N -->
@@ -508,13 +508,13 @@
                   <!-- FAC Rate -->
                   <!-- <td><mat-form-field appearance="outline"><input matInput [value]="cover.facRate"></mat-form-field></td> -->
                   <!-- FAC SI -->
-                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.facSi"></mat-form-field></td>
+                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.frc_FAC_SI"></mat-form-field></td>
                   <!-- FAC Prem -->
-                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.facPrem"></mat-form-field></td>           
-                   <!-- FAC Place No -->
+                  <td><mat-form-field appearance="outline"><input readonly matInput [value]="cover.frc_FAC_PREM"></mat-form-field></td>           
+                   <!-- FAC Ref No -->
                   <td>
                     <mat-form-field  class="fac-select" appearance="outline">
-                      <mat-select name="countryVaraible" (selectionChange)="numberGenerator($event)">
+                      <mat-select name="countryVaraible"  (selectionChange)="numberGenerator($event); updateFACRefNo($event.value, selectedTabIndex , idx , i , cover)">
                         <mat-option *ngFor="let item of facRefNo" [value]="item">
                           {{item}}
                         </mat-option>
@@ -522,7 +522,7 @@
                     </mat-form-field>
                   </td>
                   <td>
-                    <button mat-icon-button class="save-btn">
+                    <button mat-icon-button class="save-btn" (click)="singleCoverUpdate(cover)">
                       <i class="fa-solid fa-floppy-disk"></i>
                     </button> 
                   </td>
@@ -544,7 +544,7 @@
       </div>
     </div>
   </div>
- <!-- </ng-container> -->
+ </ng-container>
 
   </div>
 
