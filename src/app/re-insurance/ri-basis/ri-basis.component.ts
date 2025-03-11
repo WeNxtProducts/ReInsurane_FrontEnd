@@ -67,7 +67,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit, AfterViewI
   policyNoValidation:boolean = false;
   getTablePoloicyData:any;
   facData: any = {};
-  singleCoverValue:number = 0;
+  singleFacRefNo:number = 0;
+  singleFacRate:number = 0;
   public coverDetails = new CoverDetails();
 
   facRefNo:any[] = [];
@@ -169,6 +170,7 @@ risks:any [] = []
   selectPolicyMethod(event:any){
    this.isPresentAllRisk = event.value == 'Policy' ? true : false;
   }
+ 
   ngOnInit(): void {
     this.getByRiskById();
     this.facRefNoSelect = new FormControl('')
@@ -201,10 +203,8 @@ risks:any [] = []
       }
       this.loadingCheck = false;
     },error:(error)=>{
-      console.log(error);
       this.loadingCheck = false;
-      console.log(error)
-      this.toaster.error(error)
+      this.toaster.error('Data not found')
     }})
   }
 
@@ -244,14 +244,39 @@ risks:any [] = []
     let policyId = JSON.parse(localStorage.getItem('policyNo'))
     if(policyId != null){
       this.reInsuranceSer.getRiskDataById(policyId).pipe(take(1),takeUntil(this.destroy$),finalize(()=>this.loadingCheck = false)).subscribe({next:(data)=>{
-        this.getTablePoloicyData = data.data;
+        // this.getTablePoloicyData = data.data;
+        this.getTablePoloicyData = data;
         this.tabs = Object.keys(this.getTablePoloicyData).map(item => item)
         this.risks = Object.values(this.getTablePoloicyData)
+        this.initializeFacData();
       },error:(err)=>{
         console.log(err)
+        this.toaster.error('Data not found')
       }})
     }
    
+  }
+  initializeFacData() {
+    for (let tabIndex = 0; tabIndex <= this.tabs.length; tabIndex++) {
+      if (!this.facData[tabIndex]) {
+        this.facData[tabIndex] = {};
+      }
+  
+      for (let riskIndex = 0; riskIndex <= this.risks[this.selectedTabIndex]['risks'].length ; riskIndex++) {
+        if (!this.facData[tabIndex][riskIndex]) {
+          this.facData[tabIndex][riskIndex] = {};
+        }
+
+        for (let coverIndex = 0; coverIndex <= this.risks[this.selectedTabIndex]['risks'].length; coverIndex++) {
+          if (!this.facData[tabIndex][riskIndex][coverIndex]) {
+            this.facData[tabIndex][riskIndex][coverIndex] = {
+              frc_FAC_RATE: '',
+              frc_PLACE_REF_NO: ''
+            };
+          }
+        }
+      }
+    }
   }
   createFacPlacementControls(): FormArray {
     return this.fb.array([
@@ -463,8 +488,13 @@ risks:any [] = []
   }
 
   updateFACPercentage(value: number, tabIndex: number, riskIndex: number, coverIndex: number) {
+
+    this.singleFacRate = value;
+
+    this.percentageValidationToAll =  percentageValidator(value);
+
     if (value < 0 || value > 100) {
-      this.risks[tabIndex]['risks'][riskIndex].covers[coverIndex].fac = 0;
+      this.risks[tabIndex]['risks'][riskIndex].covers[coverIndex].frc_FAC_RATE = 0;
     }
   
     if (!this.facData[tabIndex]) {
@@ -484,7 +514,7 @@ risks:any [] = []
   
   
   updateFACRefNo(value: number, tabIndex: number, riskIndex: number, coverIndex: number, item: any) {
-    this.singleCoverValue = value;
+    this.singleFacRefNo = value;
   
     if (!this.facData[tabIndex]) {
       this.facData[tabIndex] = {};
@@ -499,16 +529,20 @@ risks:any [] = []
     }
   
     this.facData[tabIndex][riskIndex][coverIndex].frc_PLACE_REF_NO = value;
+    
     this.facData[tabIndex][riskIndex][coverIndex].frc_SYS_ID = item?.frc_SYS_ID;
   }
-  
 
+ 
+  
+  
 
 saveAllCovers() {
-  let obj:any = Object.values(this.facData).flatMap(risk =>
+
+  let obj:any[] = Object.values(this.facData).flatMap(risk =>
     Object.values(risk).flatMap(item => Object.values(item))
   );
-  
+  obj = obj.filter(item => item?.frc_FAC_RATE != '' && item?.frc_PLACE_REF_NO != '');
   this.loadingCheck = true;
   this.reInsuranceSer.updateBulkCover(obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{
     console.log(data)
@@ -518,10 +552,11 @@ saveAllCovers() {
 }
 
 singleCoverUpdate(item:any){
-  let obj:any = {};
-  obj.frc_FAC_RATE =item.fac;
-  obj.frc_PLACE_REF_NO = this.singleCoverValue
-  obj.frc_SYS_ID = item.frc_SYS_ID
+  const obj:any = {
+    frc_FAC_RATE: this.singleFacRate,
+    frc_PLACE_REF_NO: this.singleFacRefNo,
+    frc_SYS_ID: item?.frc_SYS_ID
+  };
 
   this.loadingCheck = true;
   this.reInsuranceSer.updateSingleCover(obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{

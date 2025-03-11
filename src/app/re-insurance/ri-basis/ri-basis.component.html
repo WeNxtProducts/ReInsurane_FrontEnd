@@ -490,9 +490,15 @@
                   <td>{{ cover.cqs }}</td>
                   <!-- FAC % -->
                   <td>
-                    <mat-form-field style="width: 100px;" appearance="outline">
-                      <input matInput   [(ngModel)]="cover.fac"  (ngModelChange)="updateFACPercentage(cover.fac, selectedTabIndex , idx , i)">
-                    </mat-form-field>
+                    <ng-container *ngIf="facData[selectedTabIndex]?.[idx]?.[i] as cell">
+                      <mat-form-field style="width: 100px;" appearance="outline">
+                        <input 
+                          matInput 
+                          [(ngModel)]="cell.frc_FAC_RATE" 
+                          (ngModelChange)="updateFACPercentage($event, selectedTabIndex, idx, i)"
+                        />
+                      </mat-form-field>
+                    </ng-container>
                     <mat-error *ngIf="(percentageAll && percentageValidationToAll?.percentage)">Participant Percentage should be between 0 and 100.</mat-error>
                   </td>
                   <!-- TTY % -->
@@ -514,9 +520,9 @@
                    <!-- FAC Ref No -->
                   <td>
                     <mat-form-field  class="fac-select" appearance="outline">
-                      <mat-select name="countryVaraible"  (selectionChange)="numberGenerator($event); updateFACRefNo($event.value, selectedTabIndex , idx , i , cover)">
+                      <mat-select name="countryVaraible" [value]="this.facData[selectedTabIndex]?.[idx]?.[i]?.frc_PLACE_REF_NO"  (selectionChange)="numberGenerator($event); updateFACRefNo($event.value, selectedTabIndex , idx , i , cover)">
                         <mat-option *ngFor="let item of facRefNo" [value]="item">
-                          {{item}}
+                          {{item }}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -553,4 +559,4 @@
       <img src="assets/images/no-image.png" alt="no-image" />
     </div>
   </ng-template>
-  <app-loading *ngIf="loadingCheck" ></app-loading>
+  <!-- <app-loading *ngIf="loadingCheck" ></app-loading> -->
