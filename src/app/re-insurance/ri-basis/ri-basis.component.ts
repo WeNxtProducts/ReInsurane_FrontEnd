@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -6,14 +6,13 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { map, Observable, startWith, take, takeUntil, finalize, tap } from 'rxjs';
+import { finalize, map, Observable, startWith, take, takeUntil } from 'rxjs';
 import { UnSubscriber } from '../../const-ts/un-subscriber';
 import { PolicyDetails } from '../../interface/dashboardInterface';
-import { ReInsuranceService } from '../../service/re-insurance.service';
-import { CoverDetails } from '../../modal/cover-modal'; 
-import {percentageValidator} from '../../validation/percentageValidation'
 import { CommonLogicService } from '../../service/common-logic.service';
+import { ReInsuranceService } from '../../service/re-insurance.service';
 import { ToastServiceService } from '../../service/toast-service.service';
+import { percentageValidator } from '../../validation/percentageValidation';
 
 
 
@@ -41,7 +40,7 @@ function percentageValid  (control:FormControl): { [key: string]: boolean } | nu
   templateUrl: './ri-basis.component.html',
   styleUrl: './ri-basis.component.scss',
 })
-export class RiBasisComponent extends UnSubscriber implements OnInit, AfterViewInit {
+export class RiBasisComponent extends UnSubscriber implements OnInit {
   facForm: FormGroup;
   partcipantForm: FormGroup;
   taxForm: FormGroup;
@@ -69,7 +68,8 @@ export class RiBasisComponent extends UnSubscriber implements OnInit, AfterViewI
   facData: any = {};
   singleFacRefNo:number = 0;
   singleFacRate:number = 0;
-  public coverDetails = new CoverDetails();
+  isProcess:boolean = false;
+  // public coverDetails = new CoverDetails();
 
   facRefNo:any[] = [];
   tabs: string[] = [];
@@ -239,16 +239,34 @@ risks:any [] = []
       }})
   }
 
+  updatePercentageToAll(){
+    this.percentageValidationToAll =  percentageValidator(this.facPercentage);
+      if(this.isPresentAllRisk){
+        this.percentageAll = this.facPercentage
+      }
+    }
+
   getByRiskById(){
     this.loadingCheck = true;
     let policyId = JSON.parse(localStorage.getItem('policyNo'))
     if(policyId != null){
       this.reInsuranceSer.getRiskDataById(policyId).pipe(take(1),takeUntil(this.destroy$),finalize(()=>this.loadingCheck = false)).subscribe({next:(data)=>{
-        // this.getTablePoloicyData = data.data;
-        this.getTablePoloicyData = data;
+        this.getTablePoloicyData = data.data;
         this.tabs = Object.keys(this.getTablePoloicyData).map(item => item)
         this.risks = Object.values(this.getTablePoloicyData)
+        this.tapVisible(this.risks);
         this.initializeFacData();
+        if(this.isPresentAllRisk){
+          Object.keys(this.facData).forEach(tabIndex => {
+            Object.keys(this.facData[tabIndex]).forEach(riskIndex => {
+              Object.keys(this.facData[tabIndex][riskIndex]).forEach(coverIndex => {
+                if (this.facData[tabIndex][riskIndex][coverIndex]) {
+                  this.facData[tabIndex][riskIndex][coverIndex].frc_FAC_RATE = this.percentageAll;
+                }
+              });
+            });
+          });
+        }
       },error:(err)=>{
         console.log(err)
         this.toaster.error('Data not found')
@@ -415,9 +433,6 @@ risks:any [] = []
     console.log(taxFormControl, 'taxFormControl');
   }
 
-  facPlacementBtn() {
-    this.riBtn = !this.riBtn;
-  }
 
   onPanelOpenFacPlacement(index: number) {
     this.activePanelIndex = index;
@@ -470,12 +485,7 @@ risks:any [] = []
    }
 
   }
-  updatePercentageToAll(){
-  this.percentageValidationToAll =  percentageValidator(this.facPercentage);
-    if(this.isPresentAllRisk){
-      this.percentageAll = this.facPercentage
-    }
-  }
+ 
   numberGenerator(event: any) {
     let selectedValue = event.value;
     this.facRefNoSelect.setValue(selectedValue)
@@ -489,7 +499,6 @@ risks:any [] = []
 
   updateFACPercentage(value: number, tabIndex: number, riskIndex: number, coverIndex: number) {
 
-    this.singleFacRate = value;
 
     this.percentageValidationToAll =  percentageValidator(value);
 
@@ -510,6 +519,7 @@ risks:any [] = []
     }
   
     this.facData[tabIndex][riskIndex][coverIndex].frc_FAC_RATE = value;
+    this.singleFacRate = this.facData[tabIndex][riskIndex][coverIndex].frc_FAC_RATE 
   }
   
   
@@ -529,7 +539,7 @@ risks:any [] = []
     }
   
     this.facData[tabIndex][riskIndex][coverIndex].frc_PLACE_REF_NO = value;
-    
+
     this.facData[tabIndex][riskIndex][coverIndex].frc_SYS_ID = item?.frc_SYS_ID;
   }
 
@@ -538,7 +548,7 @@ risks:any [] = []
   
 
 saveAllCovers() {
-
+  console.log(this.facData)
   let obj:any[] = Object.values(this.facData).flatMap(risk =>
     Object.values(risk).flatMap(item => Object.values(item))
   );
@@ -552,14 +562,11 @@ saveAllCovers() {
 }
 
 singleCoverUpdate(item:any){
-  const obj:any = {
-    frc_FAC_RATE: this.singleFacRate,
-    frc_PLACE_REF_NO: this.singleFacRefNo,
-    frc_SYS_ID: item?.frc_SYS_ID
-  };
 
   this.loadingCheck = true;
-  this.reInsuranceSer.updateSingleCover(obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{
+  let op = Object.values(this.facData).flatMap(risk => Object.values(risk).flatMap(item => Object.values(item))).filter((item:any) => item.frc_FAC_RATE != '' && item.frc_PLACE_REF_NO != '');
+  let $obj:any = op.find((t:any) => t.frc_SYS_ID == item.frc_SYS_ID)
+  this.reInsuranceSer.updateSingleCover($obj).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{
     console.log(data)
   },error:(error)=>{
     console.log(error)
@@ -567,14 +574,36 @@ singleCoverUpdate(item:any){
 
 }
 
-ngAfterViewInit(): void {
-  setTimeout(() => {
-    this.risks.forEach((tab, tabIndex) => {
-      tab.risks.forEach((risk: any, riskIndex: number) => {
-        risk.expanded = tabIndex === this.selectedTabIndex && riskIndex === 0; 
-      });
+
+getProcessDataHandler(){
+   let id = JSON.parse(localStorage.getItem('policyNo')) ? JSON.parse(localStorage.getItem('policyNo')) : ''
+  this.loadingCheck = true;
+  this.reInsuranceSer.getProcessData(id).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=> {
+    console.log(data)
+    this.isProcess = true;
+  },error:(error)=>{
+    console.log(error)
+  }})
+}
+
+
+getPlacementData(){
+  let id = JSON.parse(localStorage.getItem('policyNo')) ? JSON.parse(localStorage.getItem('policyNo')) : ''
+  this.loadingCheck = true;
+  this.reInsuranceSer.placementDetail(id).pipe(take(1),takeUntil(this.destroy$),finalize(()=> this.loadingCheck = false)).subscribe({next:(data)=>{
+    console.log(data)
+    this.riBtn = !this.riBtn;
+  },error:(error)=>{
+    console.log(error)
+  }})
+
+}
+
+tapVisible(risks:any){
+  risks.forEach((tab:any, tabIndex:number) => {
+    tab.risks.forEach((risk: any, riskIndex: number) => {
+      risk.expanded = tabIndex === this.selectedTabIndex && riskIndex === 0; 
     });
   });
-  
- }
+}
 }

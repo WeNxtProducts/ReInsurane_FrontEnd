@@ -571,6 +571,19 @@
           background: #0033aa;
         }
       }
+      .invalid-process-btn{
+        background: #3f5291;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+        width: 180px;
+        // &:hover{
+        //   background: #0033aa;
+        // }
+      }
       .back-btn {
         background: #042181;
         color: #fff;

@@ -73,7 +73,7 @@
       <button [disabled]="policyNoValidation" (click)="sendToDashboardData()" [disabled]="getTablePoloicyData ? true : false" [ngClass]="policyNoValidation ? 'process-btn' : 'process-btn-disable' ">
         Fetch Detail
       </button>
-      <button *ngIf="!riBtn" class="back-btn" (click)="facPlacementBtn()">← Back to RI</button>
+      <button *ngIf="!riBtn" class="back-btn" (click)="getPlacementData()">← Back to RI</button>
       </div>
     </div>
   
@@ -520,9 +520,9 @@
                    <!-- FAC Ref No -->
                   <td>
                     <mat-form-field  class="fac-select" appearance="outline">
-                      <mat-select name="countryVaraible" [value]="this.facData[selectedTabIndex]?.[idx]?.[i]?.frc_PLACE_REF_NO"  (selectionChange)="numberGenerator($event); updateFACRefNo($event.value, selectedTabIndex , idx , i , cover)">
+                      <mat-select name="" [value]="this.facData[selectedTabIndex]?.[idx]?.[i]?.frc_PLACE_REF_NO"  (selectionChange)="numberGenerator($event); updateFACRefNo($event.value, selectedTabIndex , idx , i , cover)">
                         <mat-option *ngFor="let item of facRefNo" [value]="item">
-                          {{item }}
+                          {{item}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -543,10 +543,10 @@
         </mat-expansion-panel>
       </mat-accordion>
       <div class="btn-container">
-        <button  class="process-btn">
+        <button [ngClass]="isProcess ? 'invalid-process-btn' : 'process-btn'" [disabled]="isProcess" (click)="getProcessDataHandler()">
           Process →
         </button>
-        <button class="back-btn" (click)="facPlacementBtn()">FAC Placement Details →</button>
+        <button *ngIf="isProcess" class="back-btn" (click)="getPlacementData()">FAC Placement Details →</button>
       </div>
     </div>
   </div>
