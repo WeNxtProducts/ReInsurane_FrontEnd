@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environment/environment ';
 import {
   ALL,
@@ -11,12 +11,24 @@ import {
   PXTFACRSKCVR,
   UPDATE,
   PLACEMENT,
-  PROCESS
+  PROCESS,
+  POLICY_MASTER,
+  PARTICIPANT_CODE,
+  BROKER_CODE,
+  COMMISION_TYPE,
+  TAX_TYPE,
+  PARTICIPANT,
+  SAVE,
+  COMMISSION,
+  TAX,
+  APPROVE
 } from '../common/apiConstVariable';
 import {
   PolicyDetails,
   RiskData,
   SingleCover,
+  PlacementDetail,
+  GetDashoboard
 } from '../interface/dashboardInterface';
 
 @Injectable({
@@ -24,6 +36,7 @@ import {
 })
 export class ReInsuranceService {
   baseUrl = environment.apiUrl;
+  isShow = new Subject<boolean>();
 
   constructor(private http: HttpClient) {}
 
@@ -33,6 +46,13 @@ export class ReInsuranceService {
       `${this.baseUrl}/${PXTFACHDR}/${ALL}`,
       { params: param }
     );
+  }
+
+
+  getDashboardData($policyNo : string): Observable<GetDashoboard>{
+    let polNo = $policyNo.split('/')[0];
+    let params = new HttpParams().set('ucsPolNo', polNo)
+    return this.http.get<GetDashoboard>(`${this.baseUrl}/${POLICY_MASTER}/${ALL}`,{params:params})
   }
 
   createDashboardData(data: any): Observable<PolicyDetails[]> {
@@ -64,13 +84,44 @@ export class ReInsuranceService {
     );
   }
 
-  placementDetail(id:string): Observable<any> {
+  placementDetail(id:string): Observable<PlacementDetail[]> {
     let params = new HttpParams().set('FPD_FH_SYS_ID' , id)
-    return this.http.get(`${this.baseUrl}/${PLACEMENT}/${ALL}`,{params:params});
+    return this.http.get<PlacementDetail[]>(`${this.baseUrl}/${PLACEMENT}/${ALL}`,{params:params});
   }
 
-  getProcessData(processId:string): Observable<any>{
-    let params = new HttpParams().set('policyId',processId)
-    return this.http.get(`${this.baseUrl}/${PLACEMENT}/${PROCESS}`,{params:params})
+  getProcessData(data:any): Observable<any>{
+    return this.http.post(`${this.baseUrl}/${PLACEMENT}/${PROCESS}`,data)
   }
+
+  getParticipantDetail():Observable<any>{
+    return this.http.get(`${this.baseUrl}/${PLACEMENT}/${PARTICIPANT_CODE}`)
+  }
+  getBrokerCode():Observable<any>{
+    return this.http.get(`${this.baseUrl}/${PLACEMENT}/${BROKER_CODE}`)
+  }
+
+  CommissionDetails():Observable<any>{
+    return this.http.get(`${this.baseUrl}/${PLACEMENT}/${COMMISION_TYPE}`)
+  }
+
+  taxDetail():Observable<any>{
+    return this.http.get(`${this.baseUrl}/${PLACEMENT}/${TAX_TYPE}`)
+
+  }
+  saveParticipant(data:any):Observable<any>{
+    return this.http.post(`${this.baseUrl}/${PARTICIPANT}/${SAVE}`,data)
+  }
+
+  saveCommission(data:any):Observable<any>{
+    return this.http.post(`${this.baseUrl}/${COMMISSION}/${SAVE}`,data)
+  }
+
+  saveTax(data:any):Observable<any>{
+    return this.http.post(`${this.baseUrl}/${TAX}/${SAVE}`,data)
+  }
+
+  getApprove(data:any):Observable<any>{
+    return this.http.post(`${this.baseUrl}/${PARTICIPANT}/${APPROVE}`,data)
+  }
+
 }

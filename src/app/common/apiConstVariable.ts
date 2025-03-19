@@ -8,4 +8,13 @@ export const UPDATE = 'update';
 export const BULK_UPDATE = 'bulkUpdate';
 export const PLACEMENT = 'Placement';
 export const PROCESS = 'process';
-
+export const POLICY_MASTER = 'PolicyMaster';
+export const PARTICIPANT_CODE = 'ParticipantCode';
+export const BROKER_CODE = 'BrokerCode';
+export const COMMISION_TYPE = 'CommisionType';
+export const TAX_TYPE = 'TaxType';
+export const PARTICIPANT = 'Participant';
+export const SAVE = 'save';
+export const COMMISSION = 'commission';
+export const TAX = 'tax';
+export const APPROVE = 'approve';

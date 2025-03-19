@@ -95,3 +95,57 @@ export interface SingleCover{
   frc_FAC_RATE: string;
   frc_PLACE_REF_NO : string;
 }  
+
+
+export interface PlacementDetail {
+  fpd_OVR_PREM_ORG: number;
+  fpd_SPL_PREM_LC_ORG: number;
+  fpd_FAC_PML_SI_LC: number;
+  fpd_FAC_PLACE_REF_NO: number; // Policy Ref
+  fpd_OVR_PREM_LC_ORG: number;
+  fpd_FAC_PREM_ORG: number;
+  fpd_FAC_PML_SI_LC_ORG: number;
+  fpd_FAC_PREM_LC_ORG: number;
+  fpd_SPL_PREM_ORG: number;
+  fpd_FAC_PML_SI_ORG: number;
+  fpd_FAC_SI_LC_ORG: number;
+  fpd_PML_SI_LC_ORG: number;
+  fpd_PLACE_NO: string; // Policy No
+  fpd_FAC_IDX: number;
+  fpd_SYS_ID: number;
+  fpd_POL_IDX: number;
+  fpd_SEC_ACNT_YN: boolean | null;
+  fpd_UW_SYS_ID: number;
+  fpd_SPL_PREM: number;
+  fpd_PML_SI: number;
+  fpd_OVR_PREM: number;
+  fpd_FAC_PREM_LC: number;
+  fpd_FH_SYS_ID: number;
+  fpd_SI_LC: number;
+  fpd_FAC_SI_LC: number;
+  fpd_PREM: number; // Premium
+  fpd_SPL_PREM_LC: number;
+  fpd_SI: number; // UW SI
+  fpd_PREM_LC: number;
+  fpd_FAC_PML_SI: number;
+  fpd_FAC_PREM: number; // FAC Premium
+  fpd_PML_SI_LC: number;
+  fpd_FAC_SI: number; // FAC SI
+  fpd_OVR_PREM_LC: number;
+  fpd_SI_LC_ORG: number;
+  fpd_SI_ORG: number;
+  fpd_FAC_SI_ORG: number;
+  fpd_PML_SI_ORG: number;
+  fpd_PREM_ORG: number;
+  fpd_PREM_LC_ORG: number;
+}
+
+
+export interface GetDashoboard {
+  ucsUwSysId: number;
+  ucsPolIdx: string;
+  ucsPolNo: string;
+  ucsEndNo: string;
+  ucsFmd: Date;
+  ucsTod: Date;
+}

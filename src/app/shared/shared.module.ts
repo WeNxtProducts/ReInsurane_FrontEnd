@@ -16,17 +16,19 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatDialogModule } from '@angular/material/dialog';
 
-
+import { HttpClientModule } from '@angular/common/http';
 import { LoadingModule } from '../loading/loading.module';
-
+import { DateFormatPipe } from '../pipe/date-format.pipe';
 
 
 @NgModule({
   declarations: [
-    
+    DateFormatPipe
   ],
   imports: [
+    HttpClientModule,
     CommonModule,
     FormsModule,
     LoadingModule,
@@ -44,9 +46,11 @@ import { LoadingModule } from '../loading/loading.module';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDialogModule
   ],
   exports:[
+    DateFormatPipe,
     FormsModule,
     ReactiveFormsModule,
     LoadingModule,
@@ -63,7 +67,8 @@ import { LoadingModule } from '../loading/loading.module';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDialogModule
   ]
 })
 export class SharedModule { }
